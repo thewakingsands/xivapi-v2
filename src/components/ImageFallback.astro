@@ -1,0 +1,21 @@
+---
+import fallback from './fallback.png';
+
+const {src} = Astro.props
+---
+
+<object 
+  class="fallback"
+  data={src}
+  type="image/png"
+>
+  <img src={fallback.src}>
+</object>
+
+<style>
+  .fallback {
+    max-width: 100%;
+    min-width: 300px;
+    min-height: 300px;
+  }
+</style>

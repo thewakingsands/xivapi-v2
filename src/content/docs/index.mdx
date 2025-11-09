@@ -1,0 +1,56 @@
+---
+template: splash
+
+title: XIVAPI
+description: The FFXIV web API - Search and explore comprehensive game data.
+head:
+  - tag: title
+    content: XIVAPI - The Final Fantasy 14 Web API
+hero:
+  title: The Final Fantasy 14 Web API
+  tagline: Search and explore comprehensive game data.
+  actions:
+    - text: Get Started
+      icon: right-arrow
+      link: /docs/welcome/
+    - text: API Reference
+      icon: external
+      variant: secondary
+      link: /api/docs
+      attrs:
+        target: _blank
+banner:
+  content: |
+    This documentation covers XIVAPI v2.<br/>
+    Using v1? Check the <a href="/docs/migrate/">migration guide<a>,
+    or visit the <a href="https://v1.xivapi.com/">v1 documentation</a>.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+```json frame="terminal" title="/api/sheet/Item/37362?fields=Name,Description"
+{
+  "row_id": 37362,
+  "fields": {
+    "Name": "Ironworks Tool Set",
+    "Description": "A set of Garlond Ironworks' finest instruments."
+  }
+}
+```
+
+## Features
+
+<CardGrid>
+	<Card title="Fast updates" icon="download">
+		Updated patch data _automatically_ available shortly after it's available.
+	</Card>
+	<Card title="Stable API" icon="puzzle">
+		Pin schema and game versions to _guarantee_ stability until you're ready to update.
+	</Card>
+	<Card title="Time travel (backwards)" icon="rocket">
+		Data for _every_ patch since 7.0 available and easily accessible.
+	</Card>
+	<Card title="Search anything" icon="magnifier">
+		Every sheet, in every patch, with any schema. It's _all_ there.
+	</Card>
+</CardGrid>

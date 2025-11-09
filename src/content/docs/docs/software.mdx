@@ -1,0 +1,146 @@
+---
+title: Open Source
+prev: false
+next: false
+---
+
+import { Icon } from '@astrojs/starlight/components';
+
+Without the broad community of developers that has formed around FFXIV since its
+release, and the uncountable hours put into building and maintaing the tools and
+ecosystem we've come to expect, this API simply could not exist.
+
+XIVAPI makes use of, is, and will always be open source. Many of the projects
+associated with it can be found in the [github organisation].
+
+[github organisation]: https://github.com/xivapi
+
+## Behind the Scenes
+
+These projects are directly used by, or form part of, XIVAPI itself.
+
+[<Icon name="github" class="inline-icon"/> xivapi/static](https://github.com/xivapi/static)
+: The website you're reading this on! Supplementary pages, including
+  documentation and utilities, are served as a static site built using Astro.
+
+[<Icon name="github" class="inline-icon"/> ackwell/boilmaster](https://github.com/ackwell/boilmaster)
+: The API server itself, responsible for everything under `/api`. Boilmaster has
+  been written from the outset to form an extensible and maintainable platform
+  that can power XIVAPI for years to come.
+
+[<Icon name="github" class="inline-icon"/> xivdev/EXDSchema](https://github.com/xivdev/EXDSchema)
+: The default excel schema used throughout the API. Without EXDSchema and the
+  prior art of the SaintCoinach schema, finding and utilising the content found
+  in sheets would be significantly harder.
+
+[<Icon name="external" class="inline-icon"/> Thaliak](https://thaliak.xiv.dev/)
+: The service that powers automatic version discovery throughout the API. With
+  Thaliak, we can be sure that the API remains up to date with the latest game
+  data.
+
+
+## API Clients
+
+As a web API, XIVAPI can be utilised without any further support libraries in
+any environment that is capable of making outbound requests. Libraries are
+available that build further language-specific utilities and support around the
+underlying API, maintained by the community:
+
+- [<Icon name="github" class="inline-icon"/> Eisenhuth/xivapi-swift](https://github.com/Eisenhuth/xivapi-swift): Swift
+- [<Icon name="github" class="inline-icon"/> xiv-gear-planner/xivapi-java](https://github.com/xiv-gear-planner/xivapi-java): Java
+
+The API also exposes an OpenAPI document at [/api/openapi.json][openapi] that is
+generated from the current API implementation, and powers the API reference at
+[/api/docs][docs].
+
+:::tip
+
+Did you write an API client? Please let us know to list the project above.
+
+:::
+
+[openapi]: /api/openapi.json
+[docs]: /api/docs
+
+## Alternatives
+
+XIVAPI is not perfect for every use-case - and doesn't try to be! There is an
+incredibly broad selection of alternative tools and services available from
+across the FFXIV developer community. The list below is a small selection of
+these that may be better suited to what you are trying to achieve.
+
+### Lodestone Data
+
+FFXIV's official website, Lodestone, has publicly accessible pages with
+information about characters, free companies, and the like. A few libraries
+and/or services are available that can read this information for use.
+
+- [<Icon name="github" class="inline-icon"/> xivapi/nodestone](https://github.com/xivapi/nodestone): TypeScript, library or server.
+- [<Icon name="github" class="inline-icon"/> xivapi/godestone](https://github.com/xivapi/godestone): Go, library.
+- [<Icon name="github" class="inline-icon"/> xivapi/NetStone](https://github.com/xivapi/NetStone): C#/.NET, library.
+
+You can also write your own library using the shared css selectors found at
+[xivapi/lodestone-css-selectors](https://github.com/xivapi/lodestone-css-selectors)
+
+<details>
+<summary>Didn't the API use to support Lodestone?</summary>
+
+Yes, it did. Unfortunately, this meant that every request that hit the Lodestone
+came from the API, rather than an individual consumer. Despite efforts at the
+time, downstream overuse of Lodestone data lead to increasingly high error rates
+in responses. Eventually the API was completely blocked by Lodestone.
+
+There are no current plans to re-introduce this functionality.
+
+</details>
+
+### Local Game Files
+
+The API is primarily intended for use on the web, where game files aren't
+readily accessible. If you know your code will have access to an installation of
+the game, using a game data library will likely prove significantly faster and
+more capable than the API.
+
+[<Icon name="github" class="inline-icon"/> NotAdam/Lumina](https://github.com/NotAdam/Lumina)
+: C#/.NET. The most broadly used game data library in the community. Supports
+  many game file formats, and offers a generated class library for ergonomic
+  consumption of sheet data.
+
+[<Icon name="github" class="inline-icon"/> ackwell/ironworks](https://github.com/ackwell/ironworks)
+: Rust. The data library powering XIVAPI. Modular, with support for common file
+  formats and reading directly from game patch files.
+
+### Exploration
+
+While access to data is great if you know what you're looking for, it can be
+daunting to look through. A few tools collate and/or provide an interface for
+research and exploration of the data available.
+
+
+[<Icon name="github" class="inline-icon"/> NotNite/Alpha](https://github.com/NotNite/Alpha)
+: Alpha is a modern data exploration toolkit, containing a variety of tools for
+  navigating game data.
+
+[<Icon name="external" class="inline-icon"/> Godbert](https://github.com/xivapi/SaintCoinach/releases/latest)
+: Data exploration tool primarily focusing on sheets. Part of SaintCoinach -
+  while Godbert is a useful tool, it's strongly recommended to use Lumina if
+  building a new project in .NET.
+
+
+[<Icon name="github" class="inline-icon"/> goaaats/ffxiv-explorer-fork](https://github.com/goaaats/ffxiv-explorer-fork)
+: One of the older tools, FFXIV Explorer remains a no-frills tool for navigating
+  game file content.
+
+[<Icon name="external" class="inline-icon"/> ResLogger2](https://rl2.perchbird.dev/Downloads)
+: Centralised repository of all known asset paths in the game. Used widely by
+  many of the tools and services above.
+
+### Runtime
+
+For data not available from static game files or lodestone, it may be possible
+to build the project as a plugin, where runtime information from a game session
+can be used in real time.
+
+[<Icon name="external" class="inline-icon"/> Dalamud](https://dalamud.dev/)
+: Dalamud is the predominant plugin ecosystem for FFXIV, and is an excellent
+  starting point for building runtime tools and utilities.

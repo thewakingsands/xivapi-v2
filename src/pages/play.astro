@@ -1,0 +1,19 @@
+---
+import StarlightPage, { type StarlightPageProps } from "@astrojs/starlight/components/StarlightPage.astro";
+import { SearchPlayground } from "components/play/playground";
+
+type Frontmatter = StarlightPageProps['frontmatter']
+const frontmatter: Frontmatter = {
+  title: "Search Playground",
+  fluid: true,
+  tableOfContents: false,
+  next: false,
+  prev: false,
+}
+---
+
+<StarlightPage frontmatter={frontmatter}>
+  <div class="not-content">
+    <SearchPlayground client:idle />
+  </div>
+</StarlightPage>

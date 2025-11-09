@@ -1,0 +1,8 @@
+.sl-markdown-content .inline-icon {
+	display: inline;
+  vertical-align: middle;
+}
+
+.sl-markdown-content li > .inline-icon:last-child {
+  margin-bottom: 0;
+}

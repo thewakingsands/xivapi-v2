@@ -1,0 +1,37 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = () =>
+	["docs", "openapi.json", "sheet/Item/42589"].map((path) => ({
+		params: { path },
+		props: { path },
+	}));
+
+const { path } = Astro.props;
+---
+
+<StarlightPage
+	frontmatter={{
+		title: "Docs-only environment",
+		pagefind: false,
+		prev: false,
+		next: false,
+	}}
+>
+	<p>
+		You've tried to navigate to <code>/api/{path}</code>, which is an endpoint
+		or route served by another part of the application stack.
+	</p>
+
+	<p>
+		If you are a user of the API, and seeing this in product, please immediately
+		notify us on discord - something has gone very wrong, and part of the server
+		likely fell over.
+	</p>
+
+	<p>
+		If you're working on the docs in a local environment, this is expected -
+		navigate back out with the sidebar.
+	</p>
+</StarlightPage>

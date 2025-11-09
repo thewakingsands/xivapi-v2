@@ -1,0 +1,25 @@
+diff --git a/components/SidebarSublist.astro b/components/SidebarSublist.astro
+index b521ba13ef57d9be188c8775646f9d361c3d3c7c..dae6eb02b8d0553ad5be0a49961652e41eccef77 100644
+--- a/components/SidebarSublist.astro
++++ b/components/SidebarSublist.astro
+@@ -24,6 +24,9 @@ const { sublist, nested } = Astro.props;
+ 						{...entry.attrs}
+ 					>
+ 						<span>{entry.label}</span>
++						{('target' in entry.attrs) && entry.attrs.target === '_blank' && (
++							<Icon name="external" class="external-icon"/>
++						)}
+ 						{entry.badge && (
+ 							<Badge
+ 								variant={entry.badge.variant}
+@@ -59,6 +62,10 @@ const { sublist, nested } = Astro.props;
+ </ul>
+ 
+ <style>
++  .external-icon {
++    vertical-align: middle;
++  }
++
+ 	ul {
+ 		--sl-sidebar-item-padding-inline: 0.5rem;
+ 		list-style: none;

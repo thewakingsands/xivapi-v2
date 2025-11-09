@@ -1,0 +1,63 @@
+.playground {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field > label {
+  font-weight: bold;
+}
+
+.url {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.url .action {
+  flex-shrink: 0;
+  padding: 0 0.5rem 0 0.75rem;
+}
+
+.url .action * {
+  vertical-align: middle;
+}
+
+.url .preview {
+  flex-grow: 1;
+  flex-shrink: 1;
+  border: 1px solid var(--sl-color-gray-5);
+  padding: 0.5rem 2ch;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.response {
+  border: 1px solid var(--sl-color-gray-5);
+  padding: 0.5rem 2ch;
+}
+
+
+.response :global(.shiki),
+.response :global(.shiki) span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+:root[data-theme="light"] .response :global(.shiki),
+:root[data-theme="light"] .response :global(.shiki) span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
+}

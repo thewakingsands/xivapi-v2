@@ -1,0 +1,40 @@
+{
+	"name": "xivapi",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"postinstall": "astro telemetry disable",
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"sharp"
+		],
+		"patchedDependencies": {
+			"@astrojs/starlight": "patches/@astrojs__starlight.patch"
+		}
+	},
+	"dependencies": {
+		"@astrojs/markdown-remark": "^6.0.2",
+		"@astrojs/preact": "^4.0.3",
+		"@astrojs/starlight": "^0.31.0",
+		"@shikijs/langs": "^1",
+		"@shikijs/themes": "^1",
+		"astro": "^5.1.5",
+		"clsx": "^2.1.1",
+		"hast-util-to-jsx-runtime": "^2.3.2",
+		"lucide-preact": "^0.474.0",
+		"preact": "^10.25.4",
+		"rehype-autolink-headings": "^7.1.0",
+		"rehype-widont": "^0.1.1",
+		"remark-definition-list": "^2.0.0",
+		"sharp": "^0.32.5",
+		"shiki": "^1",
+		"starlight-links-validator": "^0.14.1",
+		"typescript-parsec": "^0.3.4"
+	}
+}
