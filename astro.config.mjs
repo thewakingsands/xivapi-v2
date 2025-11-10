@@ -14,6 +14,17 @@ export default defineConfig({
 		preact(),
 		starlight({
 			title: 'xivapi',
+			defaultLocale: 'en',
+			locales: {
+				en: {
+					label: 'English',
+					lang: 'en',
+				},
+				'zh-cn': {
+					label: '简体中文',
+					lang: 'zh-CN',
+				},
+			},
 			favicon: '/favicon.ico',
 			logo: {
 				light: './src/assets/logo-light.png',
