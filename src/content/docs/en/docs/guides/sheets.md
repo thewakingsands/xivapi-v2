@@ -11,7 +11,7 @@ Sheet endpoints retrieve data for one or more rows from a sheet, mapping values
 to match a schema. Pinning is available for both game version and schema for
 these endpoints, see [Ensuring Stability] for more information.
 
-[Ensuring Stability]: /docs/guides/pinning/
+[Ensuring Stability]: /en/docs/guides/pinning/
 
 ## Language
 
@@ -33,7 +33,7 @@ requested with the `language` parameter.
 { "fields": { "Name": "Pinceau angélique" } }
 ```
 
-[concepts-localisations]: /docs/guides/concepts/#editions--localisations
+[concepts-localisations]: /en/docs/guides/concepts/#editions--localisations
 
 ## Fields
 
@@ -71,7 +71,7 @@ Icon
 : Numeric values representing an icon asset ID. XIVAPI will pre-compute the
   relevant paths for accessing the asset.
 
-[field relationships]: /docs/guides/concepts#relationships
+[field relationships]: /en/docs/guides/concepts#relationships
 
 ### Filtering
 
@@ -284,7 +284,7 @@ the data looks appropriate before committing to using transient values.
 
 :::
 
-[transient sheets]: /docs/guides/concepts/#transient-sheets
+[transient sheets]: /en/docs/guides/concepts/#transient-sheets
 
 ## Multiple Rows
 

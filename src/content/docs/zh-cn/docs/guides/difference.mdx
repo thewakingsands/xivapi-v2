@@ -1,0 +1,31 @@
+---
+title: 与官方版本的差异
+sidebar:
+  order: 5
+---
+
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
+
+为了节省服务器资源，FFCafe 提供的 XIVAPI 服务使用了不同的更新和存储方式。
+因此，部分能力与 XIVAPI 官方的服务存在差异。主要差异点如下：
+
+<AnchorHeading id="language" level={3}>支持的查询语言</AnchorHeading>
+
+本服务支持查询以下语言的数据：
+
+- 简体中文 `chs`（默认/主要语言）
+- 英 `en`、德 `de`、法 `fr`、日 `ja`
+
+数据基于每个客户端的最新版本数据合并而来。
+
+<AnchorHeading id="sheets" level={3}>支持的表格列表</AnchorHeading>
+
+本服务不支持查询子文件夹中的表格数据（名称中存在 `/` 字符的表格，以对话文本为主）。
+
+<AnchorHeading id="game-versions" level={3}>版本控制</AnchorHeading>
+
+本服务暂不支持版本控制，所有请求都将使用最新版本的数据。查询表格数据时 `version` 参数无效。
+
+<AnchorHeading id="assets" level={3}>资源</AnchorHeading>
+
+本服务暂不支持资源（assets）请求，所有相关请求都将返回 404。

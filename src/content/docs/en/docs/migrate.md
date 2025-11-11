@@ -13,7 +13,7 @@ This document is intended to outline the key differences between v1 and v2, and
 assist in efforts to migrate to the new version. For full documentation of the
 v2 API, refer to the [guides] and [api reference].
 
-[guides]: /docs/guides/
+[guides]: /en/docs/guides/
 [api reference]: /api/docs
 
 ## Game Content
@@ -55,8 +55,8 @@ outlined in [the sheets documentation][sheets filtering]. Fields may have
 shuffled slightly to better represent their structure in the game files.
 
 [EXDSchema]: https://github.com/xivdev/EXDSchema
-[schema]: /docs/guides/concepts/#schemas
-[sheets filtering]: /docs/guides/sheets/#filtering
+[schema]: /en/docs/guides/concepts/#schemas
+[sheets filtering]: /en/docs/guides/sheets/#filtering
 
 ### Transient Fields
 
@@ -70,7 +70,7 @@ including the term "transient" in its name. These fields can be included in
 responses through the `transient=` URL parameter, see the [Transient Sheets]
 documentation for further information.
 
-[Transient Sheets]: /docs/guides/sheets/#transient-sheets
+[Transient Sheets]: /en/docs/guides/sheets/#transient-sheets
 
 ### Other Computed Fields
 
@@ -105,7 +105,7 @@ queries into one search query syntax.
 
 An introduction to this new syntax can be found in the [Searching Sheets] guide.
 
-[Searching Sheets]: /docs/guides/search/
+[Searching Sheets]: /en/docs/guides/search/
 
 ## Lodestone
 
@@ -117,4 +117,4 @@ There are no current plans to re-introduce Lodestone endpoints in v2. For
 alternatives, please see the [Open Souce][lodestone alternatives] page, which
 lists a few tools and libraries that can be used to obtain this information.
 
-[lodestone alternatives]: /docs/software#lodestone-data
+[lodestone alternatives]: /en/docs/software#lodestone-data

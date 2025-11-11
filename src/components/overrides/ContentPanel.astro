@@ -1,17 +1,10 @@
 ---
-import type { Props } from "@astrojs/starlight/props";
-
-const { fluid = false } = Astro.props.entry.data;
+const { fluid = false } = Astro.locals.starlightRoute.entry.data
 ---
 
 <div class="content-panel">
-	<div
-		class:list={[
-			"sl-container",
-			fluid && "fluid",
-		]}
-	>
-			<slot />
+	<div class:list={['sl-container', fluid && 'fluid']}>
+		<slot />
 	</div>
 </div>
 

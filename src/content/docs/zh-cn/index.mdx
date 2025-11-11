@@ -1,0 +1,37 @@
+---
+template: splash
+
+title: XIVAPI
+description: FFXIV 网页 API - 搜索和探索全面的游戏数据。
+head:
+  - tag: title
+    content: XIVAPI - 最终幻想 14 网页 API
+hero:
+  title: 最终幻想 14 网页 API
+  tagline: 搜索和探索全面的游戏数据。
+  actions:
+    - text: 开始使用
+      icon: right-arrow
+      link: /zh-cn/docs/welcome/
+    - text: API 参考
+      icon: external
+      variant: secondary
+      link: /api/docs
+      attrs:
+        target: _blank
+banner:
+  content: |
+    本文档适用于 XIVAPI v2。<br/>
+    正在使用 v1？请查看 <a href="/zh-cn/docs/migrate/">迁移指南</a>
+    或访问 <a href="https://github.com/thewakingsands/cafemaker/wiki">v1 文档</a>。
+---
+
+```json frame="terminal" title="/api/sheet/Item/37362?fields=Name,Description"
+{
+  "row_id": 37362,
+  "fields": {
+    "Description": "加隆德炼铁厂倾情制作的工具套装。",
+    "Name": "加隆德工具套装"
+  }
+}
+```

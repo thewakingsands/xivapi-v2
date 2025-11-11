@@ -21,10 +21,10 @@
 	"dependencies": {
 		"@astrojs/markdown-remark": "^6.0.2",
 		"@astrojs/preact": "^4.0.3",
-		"@astrojs/starlight": "^0.31.0",
+		"@astrojs/starlight": "^0.36.2",
 		"@shikijs/langs": "^1",
 		"@shikijs/themes": "^1",
-		"astro": "^5.1.5",
+		"astro": "^5.15.4",
 		"clsx": "^2.1.1",
 		"hast-util-to-jsx-runtime": "^2.3.2",
 		"lucide-preact": "^0.474.0",

@@ -14,7 +14,7 @@ export default defineConfig({
 		preact(),
 		starlight({
 			title: 'xivapi',
-			defaultLocale: 'en',
+			defaultLocale: 'zh-cn',
 			locales: {
 				en: {
 					label: 'English',
@@ -31,25 +31,37 @@ export default defineConfig({
 				dark: './src/assets/logo-dark.png',
 				replacesTitle: true,
 			},
-			social: {
-				discord: 'https://discord.gg/MFFVHWC',
-				github: 'https://github.com/xivapi',
-			},
+			social: [
+				{
+					icon: 'github',
+					label: 'GitHub',
+					href: 'https://github.com/thewakingsands/xivapi-v2',
+				},
+			],
 			sidebar: [
 				'docs/welcome',
 				{
 					label: 'Guides',
+					translations: {
+						'zh-CN': '指南',
+					},
 					autogenerate: { directory: 'docs/guides' },
 				},
 				'docs/software',
 				'docs/migrate',
 				{
 					label: 'Search Playground',
+					translations: {
+						'zh-CN': '搜索 Playground',
+					},
 					link: '/play/',
 				},
 				{
 					label: 'API Reference',
-					link: '/api/docs',
+					translations: {
+						'zh-CN': 'API 参考',
+					},
+					link: 'https://xivapi-v2.xivcdn.com/api/docs',
 					attrs: { target: '_blank' },
 				}
 			],

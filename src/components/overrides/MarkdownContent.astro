@@ -1,19 +1,20 @@
 ---
-import type { Props } from '@astrojs/starlight/props'
 import Default from '@astrojs/starlight/components/MarkdownContent.astro'
-import { LinkCard } from '@astrojs/starlight/components';
+import { LinkCard } from '@astrojs/starlight/components'
 
-const { reference } = Astro.props.entry.data;
+const { reference } = Astro.locals.starlightRoute.entry.data
 ---
 
 <Default {...Astro.props}>
-	{reference != null && (
-		<LinkCard
-			title={reference.title ?? "API Reference"}
-			href={reference.href}
-			description={reference.description}
-		/>
-	)}
+	{
+		reference != null && (
+			<LinkCard
+				title={reference.title ?? 'API Reference'}
+				href={reference.href}
+				description={reference.description}
+			/>
+		)
+	}
 
-	<slot/>
+	<slot />
 </Default>

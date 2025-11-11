@@ -1,0 +1,312 @@
+---
+title: 读取表格
+sidebar:
+  order: 3
+reference:
+  href: /api/docs#tag/sheets
+  description: 表格端点的 OpenAPI 规范。
+---
+
+import AITranslated from 'components/asides/AITranslated.astro';
+
+<AITranslated />
+
+表格端点从表格中检索一行或多行的数据，映射值以匹配模式。这些端点支持固定游戏版本和模式，有关更多信息，请参阅[确保稳定性]。
+
+[Ensuring Stability]: /zh-cn/docs/guides/pinning/
+
+## 语言
+
+包含面向用户字符串的表格通常本地化为游戏客户端支持的所有语言。有关本地化和游戏版本的更多详细信息，请参阅[重要概念][concepts-localisations]。
+
+虽然 XIVAPI 在响应中默认为英语文本，但可以使用 `language` 参数请求其他语言。
+
+```json /language=(ja|en|de|fr)/
+// /api/sheet/Item/42589?fields=Name&language=ja
+{ "fields": { "Name": "天使の筆" } }
+// /api/sheet/Item/42589?fields=Name&language=en
+{ "fields": { "Name": "Angel Brush" } }
+// /api/sheet/Item/42589?fields=Name&language=de
+{ "fields": { "Name": "Engelspinsel" } }
+// /api/sheet/Item/42589?fields=Name&language=fr
+{ "fields": { "Name": "Pinceau angélique" } }
+```
+
+[concepts-localisations]: /zh-cn/docs/guides/concepts/#editions--localisations
+
+## 字段
+
+字段构成表格端点响应的大部分。有许多工具可用于过滤和调整字段在响应中的表示方式。
+
+### 类型
+
+所有字段都有一个类型，该类型来自游戏数据和正在使用的模式的组合。类型用于定义数据的整体结构以及如何读取它。
+
+标量
+: 最常见的字段类型，标量表示单个值，例如数字、字符串或布尔值。
+
+结构体
+: 有时，表格包含相关字段的集合。模式可能将其表示为结构体，在响应中将字段分组在共享父字段下。
+
+数组
+: 当连续字段表示值的重复时，模式可能将它们分组为数组。数组始终具有固定长度——未使用的条目通常设置为 null 或零值。
+
+此外，标量可能具有其类型提供的附加语义：
+
+关系
+: 值表示指向另一个表格的链接的字段。有关更多信息，请参阅[字段关系]。
+
+图标
+: 表示图标资源 ID 的数值。XIVAPI 将预计算访问资源的相关路径。
+
+[field relationships]: /zh-cn/docs/guides/concepts#relationships
+
+### 过滤
+
+表格通常包含比单个用例所需更多的信息。当存在链接其他数据行的字段关系时，这会迅速增加。例如，"Angel Brush" `Item` 的[完整响应][pct brush full]在压缩前超过 80kB，代表大约 6500 行格式化的 JSON。
+
+[pct brush full]: /api/sheet/Item/42589
+
+为了减少响应中不必要的数据量，可以使用 `fields` 参数指定应包含的字段子集：
+
+<details>
+<summary><code>fields=Name,LevelEquip</code></summary>
+
+```json "Name" "LevelEquip"
+// /api/sheet/Item/42589?fields=Name,LevelEquip
+{
+  "fields": {
+    "Name": "Angel Brush",
+    "LevelEquip": 99
+  }
+}
+```
+
+</details>
+
+如果字段嵌套在结构体或关系中，使用点表示法指定访问它的路径：
+
+<details>
+<summary><code>fields=ItemUICategory.Name</code></summary>
+
+```json "ItemUICategory.Name" "ItemUICategory" "Name"
+// /api/sheet/Item/42589?fields=ItemUICategory.Name
+{
+  "fields": {
+    "ItemUICategory": {
+      "fields": {
+        "Name": "Pictomancer's Arm"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+可以指定数组字段以从所有条目中检索值：
+
+<details>
+<summary><code>fields=BaseParam[].Name</code></summary>
+
+```json "BaseParam[]" "BaseParam"
+// /api/sheet/Item/42589?fields=BaseParam[].Name
+{
+  "fields": {
+    "BaseParam": [
+      { "fields": { "Name": "Intelligence" } },
+      { "fields": { "Name": "Vitality" } }
+      // ...
+    ]
+  }
+}
+```
+
+</details>
+
+:::tip[不确定需要什么字段？]
+
+您可以在 `/sheet/{sheet}/{row}` 端点上省略 `fields` 参数，以查看给定游戏版本和模式可用的每个字段。提醒一下，可能有很多！
+
+:::
+
+### 装饰器
+
+除了过滤响应中的字段外，`fields` 参数还可以用于指定"装饰器"，这些装饰器修改字段的读取方式或在响应中的呈现方式。为了避免冲突，装饰器包含在响应字段名称中。
+
+#### `@lang(<lang>)`
+
+虽然可以使用 `language` 参数更改请求中使用的默认语言，但可能需要在同一请求中检索两种或更多语言。
+
+<details>
+<summary><code>fields=Name,Name@lang(ja)</code></summary>
+
+```json "Name@lang(ja)"
+// /api/sheet/Item/42589?fields=Name,Name@lang(ja)
+{
+  "fields": {
+    "Name": "Angel Brush",
+    "Name@lang(ja)": "天使の筆"
+  }
+}
+```
+
+</details>
+
+如果在结构字段上指定，提供的语言将作为任何嵌套字段的默认值：
+
+<details>
+<summary><code>fields=ItemUICategory@lang(de).Name</code></summary>
+
+```json "ItemUICategory@lang(de)"
+// /api/sheet/Item/42589?fields=ItemUICategory@lang(de).Name
+{
+  "fields": {
+    "ItemUICategory@lang(de)": {
+      "fields": {
+        "Name": "Hauptwaffe der Piktomanten"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+#### `@as(<transform>)`
+
+`as` 装饰器对字段执行转换，以针对特定用例定制结果值。
+
+`@as(raw)` 将阻止处理关系和图标等字段类型，如果不会使用丰富数据，这很有用。
+
+<details>
+<summary><code>fields=ItemUICategory,ItemUICategory@as(raw)</code></summary>
+
+```json "ItemUICategory@as(raw)"
+// /api/sheet/Item/42589?fields=ItemUICategory,ItemUICategory@as(raw)
+{
+  "fields": {
+    "ItemUICategory": {
+      "value": 111,
+      // ...
+      "fields": {
+        // ...
+      }
+    },
+    "ItemUICategory@as(raw)": 111
+  }
+}
+```
+
+</details>
+
+`@as(html)` 将字符串值格式化为 HTML 片段，支持游戏富文本格式中的大多数文本和格式功能。
+
+<details>
+<summary><code>fields=Description,Description@as(html)</code></summary>
+
+```json wrap "Description@as(html)"
+// /api/sheet/Item/44104?fields=Description,Description@as(html)
+{
+  "fields": {
+    "Description": "Warm flour tortillas filled with slices of marinated rroneek chuck that has been grilled to a smoky char.\n\nEXP Bonus: +3% Duration: 30m\n(Duration can be extended to 60m by consuming multiple servings)",
+    "Description@as(html)": "Warm flour tortillas filled with slices of marinated rroneek chuck that has been grilled to a smoky char.<br><br><span style=\"color:rgba(0,204,34,1);\">EXP Bonus:</span> +3% <span style=\"color:rgba(0,204,34,1);\">Duration:</span> 30m<br>(Duration can be extended to 60m by consuming multiple servings)"
+  }
+}
+```
+
+</details>
+
+### 瞬态表格
+
+如[之前概述][transient sheets]，相关数据可能作为实现细节拆分为两个或更多表格。为了减少检索数据所需的请求数量，API 尝试查找瞬态表格，并在可用时将其内容包含在顶级 `transient` 键中。
+
+要控制这些字段，可以提供 `transient` 参数。它接受与[上面概述](#fields)的 `fields` 参数相同的语法。
+
+<details>
+<summary><code>transient=Description@as(html)</code></summary>
+
+```json wrap "transient"
+// /api/sheet/Action/34684?transient=Description@as(html)
+{
+  "fields": {
+    // ...
+  },
+  "transient": {
+    "Description@as(html)": "Quickly dash 15 yalms forward.<br><span style=\"color:rgba(0,204,34,1);\">Additional Effect: </span>Increases movement speed<br><span style=\"color:rgba(0,204,34,1);\">Duration: </span>5s<br>Cannot be executed while bound."
+  }
+}
+```
+
+</details>
+
+:::note
+
+对瞬态表格的检查是简单的——对表格 `Example` 的请求将盲目返回 `ExampleTransient` 表格中匹配行的数据（如果存在）。
+
+虽然这种方法在大多数情况下都能很好地工作，但在承诺使用瞬态值之前，请始终验证数据看起来是否合适。
+
+:::
+
+[transient sheets]: /zh-cn/docs/guides/concepts/#transient-sheets
+
+## 多行
+
+上面的所有示例都使用了单行端点 `/api/sheet/{sheet}/{row}`。如果需要来自同一表格的多行，可以使用行列表端点。
+
+上面概述的所有参数也可用于行列表。
+
+默认情况下，它将按 ID 顺序列出所有行，从第一个开始。
+
+```json
+// /api/sheet/Item?fields=Name
+{
+  "rows": [
+    { "row_id": 0, "fields": { "Name": "" } },
+    { "row_id": 1, "fields": { "Name": "Gil" } },
+    { "row_id": 2, "fields": { "Name": "Fire Shard" } },
+    // ...
+  ]
+}
+```
+
+如果提供，`after` 参数将跳过小于或等于指定行 ID 的任何行。此外，`limit` 参数可用于调整一次响应中返回的最大结果数。过大的 `limits` 将被限制为服务器定义的最大值。
+
+<details>
+<summary><code>after=1&limit=2</code></summary>
+
+```json "after=1" "limit=2"
+// /api/sheet/Item?fields=Name&after=1&limit=2
+{
+  "rows": [
+    { "row_id": 2, "fields": { "Name": "Fire Shard" } },
+    { "row_id": 3, "fields": { "Name": "Ice Shard" } }
+  ]
+}
+```
+
+</details>
+
+或者，如果已知，可以提供行 ID 列表——这对于从表格中检索一批行很有用。
+
+<details>
+<summary><code>rows=1,29,46</code></summary>
+
+```json /(?:rows=|row_id": )(1)/ "29" "46"
+// /api/sheet/Item?fields=Name&rows=1,29,46
+{
+  "rows": [
+    { "row_id": 1, "fields": { "Name": "Gil" } },
+    { "row_id": 29, "fields": { "Name": "MGP" } },
+    { "row_id": 46, "fields": { "Name": "Allagan Tomestone of Aesthetics" } }
+  ]
+}
+```
+
+</details>
+
+:::caution
+
+行 ID **不**保证是连续的，因为许多表格包含大量未使用 ID 的"空洞"。在大多数情况下，这些 ID 不会出现在数据中，并且在请求时（包括迭代时）将被跳过或忽略。
+
+:::

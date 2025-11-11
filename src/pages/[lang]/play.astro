@@ -1,0 +1,28 @@
+---
+import StarlightPage, {
+  type StarlightPageProps,
+} from '@astrojs/starlight/components/StarlightPage.astro'
+import { SearchPlayground } from 'components/play/playground'
+import { languages } from 'i18n/ui'
+
+export function getStaticPaths() {
+  return Object.keys(languages).map((lang) => ({
+    params: { lang },
+  }))
+}
+
+type Frontmatter = StarlightPageProps['frontmatter']
+const frontmatter: Frontmatter = {
+  title: 'Search Playground',
+  fluid: true,
+  tableOfContents: false,
+  next: false,
+  prev: false,
+}
+---
+
+<StarlightPage frontmatter={frontmatter}>
+  <div class="not-content">
+    <SearchPlayground client:idle />
+  </div>
+</StarlightPage>

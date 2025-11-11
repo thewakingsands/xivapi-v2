@@ -1,0 +1,83 @@
+---
+title: 迁移到 V2
+prev: false
+next: false
+---
+
+import AITranslated from 'components/asides/AITranslated.astro';
+  
+<AITranslated />
+
+XIVAPI v2 代表服务的从头重新实现，重点关注消费者的稳定性，并为未来几年提供坚实的平台。为了实现这一点，它不尝试与 v1 保持向后兼容性。
+
+本文档旨在概述 v1 和 v2 之间的主要差异，并协助迁移到新版本。有关 v2 API 的完整文档，请参阅[指南]和[API 参考]。
+
+[指南]: /zh-cn/docs/guides/
+[API 参考]: /api/docs
+
+## 游戏内容
+
+游戏数据在 v1 API 中称为 `content` 和 `indexes`，在 v2 中统一称为 `sheets`。这与下面概述的其他一些更新的名称一起，使 API 与 FFXIV 开发者社区使用的常用术语保持一致。
+
+表格数据访问已经发生了几个重大变化，但由于表格是从游戏文件继承的具体概念，因此语义 _大致_ 相似。
+
+### 列和过滤
+
+在整个 v2 API 及其文档中，"field"用于指代 V1 所称的"column"。这扩展到响应中的 `fields` 对象和 `fields=` 过滤 URL 参数。
+
+字段过滤与 v1 大致相似，但数组除外，数组通过方括号表示。
+
+```json
+// v1
+columns=Array.*.Field
+// v2
+fields=Array[].Field
+```
+
+### 模式变更
+
+V2 使用 [EXDSchema] 作为其[模式]。EXDSchema 继承了 v1 使用的 SaintCoinach 模式中的大部分名称和映射——因此大多数字段应该与您习惯的相同或相似。
+
+如果字段不在您期望的位置，您可以通过访问不带字段过滤器的行端点来检查表格的完整模式结构，如[表格文档][sheets filtering]中所述。字段可能已经稍微重新排列，以更好地表示它们在游戏文件中的结构。
+
+[EXDSchema]: https://github.com/xivdev/EXDSchema
+[模式]: /zh-cn/docs/guides/concepts/#schemas
+[表格文档]: /zh-cn/docs/guides/sheets/#filtering
+
+### 瞬态字段
+
+虽然由于上面概述的模式更新，一些字段已经移动，但其他字段可能看起来完全缺失。在许多情况下，这些是"计算"字段——也就是说，实际上不存在于给定表格上的字段，而是基于其他数据派生的。
+
+在少数情况下，这些字段实际上属于一个单独的表格，通常在其名称中包含术语"transient"。这些字段可以通过 `transient=` URL 参数包含在响应中，有关更多信息，请参阅[瞬态表格]文档。
+
+[瞬态表格]: /zh-cn/docs/guides/sheets/#transient-sheets
+
+### 其他计算字段
+
+在大多数其他情况下，计算字段的派生方式难以以可维护的方式表示。因此，v2 API 不支持进一步的计算字段。
+
+如果这些计算字段中的一个或多个对您的用例至关重要，请在 Discord 上联系我们——可能有替代方法来构造语义上等效的数据。或者，您可能能够参考 [v1 代码库][v1 computed] 中这些字段的实现，以便在您使用 v2 时复制它。
+
+[v1 computed]: https://github.com/xivapi/xivapi.com/tree/master/src/Service/DataCustom
+
+### 游戏内容链接
+
+V1 API 提供了反向关系查找，在行上公开为 `GameContentLinks` 字段。目前，v2 没有等效功能，但这是我们感兴趣添加的功能。由于 v2 在功能上是比 v1"更低级别"的系统，可能需要一段时间才能实现可行的方法。
+
+类似于计算字段，如果此功能对您的用例至关重要，请联系我们，因为可能存在替代方案。
+
+## 搜索
+
+V2 有一个强大的搜索端点，将 v1 的查询字符串、过滤器和高级 Elasticsearch 查询的许多功能合并为一个搜索查询语法。
+
+有关此新语法的介绍，请参阅[搜索表格]指南。
+
+[Searching Sheets]: /zh-cn/docs/guides/search/
+
+## Lodestone
+
+V1 提供了从 Lodestone 获取数据的端点，但由于执行的抓取性质，这些端点的可用性下降。到 2023 年底，它们实际上已经无法使用。
+
+目前没有计划在 v2 中重新引入 Lodestone 端点。有关替代方案，请参阅[开源][lodestone alternatives]页面，其中列出了一些可用于获取此信息的工具和库。
+
+[lodestone alternatives]: /zh-cn/docs/software#lodestone-data

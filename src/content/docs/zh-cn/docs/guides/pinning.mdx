@@ -1,0 +1,69 @@
+---
+title: 确保稳定性
+sidebar:
+  order: 2
+---
+
+import AITranslated from 'components/asides/AITranslated.astro';
+import CafeNotSupported from 'components/asides/CafeNotSupported.astro';
+
+<AITranslated />
+
+如重要概念中所述，新的[游戏版本][versions]可能导致任意破坏性更改，[模式]可能会收到来自社区的更改以修复或改进它们。
+
+上述任何一种都可能影响 API 在响应中构建数据的方式——反过来，破坏任何依赖该结构使用 API 的代码。
+
+没有人希望收到未宣布的破坏性更改。XIVAPI 允许您"固定"游戏版本和模式，以确保您对 API 的使用不会改变，直到您准备好更新它。
+
+此外，可以使用固定来查看数据在 API 记录的任何先前游戏版本中的样子。
+
+[versions]: /zh-cn/docs/guides/concepts/#versions
+[schemas]: /zh-cn/docs/guides/concepts/#schemas
+
+## 游戏版本
+
+<CafeNotSupported tag="game-versions" />
+
+## 模式
+
+提供表格数据的 API 端点还接受 `schema` 参数。指定的模式将在从表格读取数据时使用，并用于解释提供的任何字段过滤器。如果省略，将使用请求的游戏版本的最新模式。
+
+所有接受模式参数的请求也将在响应对象中包含 `schema` 值。该值被视为用于请求的模式的_规范_指定符——因此，建议记录该值，如果计划固定模式，则使用它。努力确保规范指定符是模式在某个时间点最稳定的表示。
+
+API 构建为支持多个社区模式源。在撰写本文时，EXDSchema 是唯一积极支持的源，有关其使用的详细信息，请参见下文。
+
+### EXDSchema
+
+[EXDSchema][exdschema] git 存储库跟踪跨游戏版本的表格模式，并在 FFXIV 开发者社区中越来越广泛地使用。XIVAPI 提供了几种方法来指定您希望使用的 EXDSchema 映射。
+
+`exdschema@2:ver:request`
+: 选择请求目标的游戏版本可用的最新模式。
+
+`exdschema@2:rev:<revision>`
+: 使用指定 [git 修订版](https://git-scm.com/zh-cn/docs/revisions)的模式。
+
+EXDSchema 使用 `exdschema@2:rev:<revision>` 形式作为规范指定符，将已解析提交的完整 SHA-1 对象名称作为修订版。
+
+[exdschema]: https://github.com/xivdev/EXDSchema
+
+#### 示例
+
+在其他更改中，提交 [`c44cfd2`][c44cfd2] 将 `WorldDCGroupType` 的 `Unknown0` 字段重命名为 `NeolobbyId`。可以使用模式固定来观察 `c44cfd2` 包含这些更改，而父提交 `22f45f4` 不包含。
+
+```json frame="none" /=(exdschema@2:rev:\w+)/ "\"NeolobbyId\"" "\"Unknown0\""
+// /api/sheet/WorldDCGroupType/9? \
+//   fields=Unknown0,NeolobbyId&schema=exdschema@2:rev:c44cfd2
+{
+  "schema": "exdschema@2:rev:c44cfd270a72248293e242b4950b2ddeff9e49f2",
+  "fields": { "NeolobbyId": 9 }
+}
+
+// /api/sheet/WorldDCGroupType/9? \
+//   fields=Unknown0,NeolobbyId&schema=exdschema@2:rev:22f45f4
+{
+  "schema": "exdschema@2:rev:22f45f4d6aab0c8722f5c0a6eabceb1e2a13c12c",
+  "fields": { "Unknown0": 9 }
+}
+```
+
+[c44cfd2]: https://github.com/xivdev/EXDSchema/commit/c44cfd270a72248293e242b4950b2ddeff9e49f2#diff-8d8a405e3d212bddee99cb53ef265fd0498a88df2027f3aa6fa41b1b7353bd7c

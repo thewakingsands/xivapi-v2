@@ -1,0 +1,120 @@
+---
+title: 开源
+prev: false
+next: false
+---
+
+import AITranslated from 'components/asides/AITranslated.astro';
+import { Icon } from '@astrojs/starlight/components';
+
+<AITranslated />
+
+
+如果没有自 FFXIV 发布以来围绕它形成的广泛开发者社区，以及投入到构建和维护我们期望的工具和生态系统中的无数小时，这个 API 根本不可能存在。
+
+XIVAPI 诞生自开源社区，以开源形式发布，并将始终贡献给开源社区。您可以在 [<Icon name="github" class="inline-icon"/> xivapi]([xivapi_group]) 查看与之相关的项目。
+您也可以在 [<Icon name="github" class="inline-icon"/> thewakingsands]([ffcafe_group]) 查看 FFCafe 的相关项目。
+
+[xivapi_group]: https://github.com/xivapi
+[ffcafe_group]: https://github.com/thewakingsands
+
+## 幕后
+
+XIVAPI 使用或由以下项目提供支持：
+
+[<Icon name="github" class="inline-icon"/> xivapi/static](https://github.com/xivapi/static)
+: XIVAPI 官方文档网站，包括文档和实用程序，由 Astro 构建。
+
+[<Icon name="github" class="inline-icon"/> ackwell/boilmaster](https://github.com/ackwell/boilmaster)
+: API 服务器本身，负责 `/api` 下的一切。Boilmaster 从一开始就编写为形成一个可扩展和可维护的平台，可以在未来几年为 XIVAPI 提供支持。
+
+[<Icon name="github" class="inline-icon"/> xivdev/EXDSchema](https://github.com/xivdev/EXDSchema)
+: 整个 API 中使用的默认 excel 模式。如果没有 EXDSchema 和 SaintCoinach 模式的先例，查找和利用表格中的内容将变得非常困难。
+
+[<Icon name="external" class="inline-icon"/> Thaliak](https://thaliak.xiv.dev/)
+: 为整个 API 的自动版本发现提供支持的服务。有了 Thaliak，我们可以确保 API 保持与最新游戏数据的同步。
+
+FFCafe 版本还使用了以下项目：
+
+[<Icon name="github" class="inline-icon"/> thewakingsands/xivapi-v2](https://github.com/thewakingsands/xivapi-v2)
+: FFCafe 版本的 XIVAPI 文档网站（即本网站）。
+
+[<Icon name="github" class="inline-icon"/> thewakingsands/boilmaster](https://github.com/thewakingsands/boilmaster)
+: 基于原始 Boilmaster 项目构建，用于提供 FFCafe 版本的 API 服务端。
+
+[<Icon name="github" class="inline-icon"/> thewakingsands/ixion](https://github.com/thewakingsands/ixion)
+: FFXIV 版本更新、管理及数据文件处理工具。
+
+## API 客户端
+
+XIVAPI 可以通过任意 HTTP 请求工具使用。您也可以使用社区维护的、针对特定语言优化的包：
+
+- [<Icon name="github" class="inline-icon"/> Eisenhuth/xivapi-swift](https://github.com/Eisenhuth/xivapi-swift): Swift
+- [<Icon name="github" class="inline-icon"/> xiv-gear-planner/xivapi-java](https://github.com/xiv-gear-planner/xivapi-java): Java
+
+您可以在 [/api/openapi.json][openapi] 获取基于当前 API 实现生成的 OpenAPI 文档。[/api/docs][docs] 的 API 参考工具也使用此文档。
+
+:::tip
+
+您编写了 API 客户端吗？请告诉我们，以便将项目列在上面。
+
+:::
+
+[openapi]: /api/openapi.json
+[docs]: /api/docs
+
+## 替代方案
+
+XIVAPI 并不适合每个用例——也不试图做到这一点！FFXIV 开发者社区提供了极其广泛的替代工具和服务选择。下面的列表是其中的一小部分，可能更适合您要实现的目标。
+
+### Lodestone 数据
+
+FFXIV 的官方网站 Lodestone 有公开可访问的页面，包含有关角色、自由公司等的信息。有一些库和/或服务可用于读取此信息以供使用。
+
+- [<Icon name="github" class="inline-icon"/> xivapi/nodestone](https://github.com/xivapi/nodestone): TypeScript，库或服务器。
+- [<Icon name="github" class="inline-icon"/> xivapi/godestone](https://github.com/xivapi/godestone): Go，库。
+- [<Icon name="github" class="inline-icon"/> xivapi/NetStone](https://github.com/xivapi/NetStone): C#/.NET，库。
+
+您也可以使用在 [xivapi/lodestone-css-selectors](https://github.com/xivapi/lodestone-css-selectors) 找到的共享 CSS 选择器编写自己的库。
+
+<details>
+<summary>API 以前不支持 Lodestone 吗？</summary>
+
+是的，它支持。不幸的是，这意味着每个访问 Lodestone 的请求都来自 API，而不是个人消费者。尽管当时做出了努力，但下游对 Lodestone 数据的过度使用导致响应中的错误率越来越高。最终 API 被 Lodestone 完全阻止。
+
+目前没有计划重新引入此功能。
+
+</details>
+
+### 本地游戏文件
+
+API 主要用于网页，在网页上游戏文件不容易访问。如果您知道您的代码将可以访问游戏安装，使用游戏数据库可能会比 API 快得多且功能更强大。
+
+[<Icon name="github" class="inline-icon"/> NotAdam/Lumina](https://github.com/NotAdam/Lumina)
+: C#/.NET。社区中使用最广泛的游戏数据库。支持许多游戏文件格式，并提供生成的类库以便于使用表格数据。
+
+[<Icon name="github" class="inline-icon"/> ackwell/ironworks](https://github.com/ackwell/ironworks)
+: Rust。为 XIVAPI 提供支持的数据库。模块化，支持常见文件格式并直接从游戏补丁文件读取。
+
+### 探索
+
+虽然如果您知道要查找什么，访问数据是很好的，但浏览可能会令人生畏。一些工具整理和/或提供用于研究和探索可用数据的界面。
+
+[<Icon name="github" class="inline-icon"/> NotNite/Alpha](https://github.com/NotNite/Alpha)
+: Alpha 是一个现代数据探索工具包，包含用于导航游戏数据的各种工具。
+
+[<Icon name="external" class="inline-icon"/> Godbert](https://github.com/xivapi/SaintCoinach/releases/latest)
+: 主要专注于表格的数据探索工具。SaintCoinach 的一部分——虽然 Godbert 是一个有用的工具，但如果在 .NET 中构建新项目，强烈建议使用 Lumina。
+
+[<Icon name="github" class="inline-icon"/> goaaats/ffxiv-explorer-fork](https://github.com/goaaats/ffxiv-explorer-fork)
+: 较旧的工具之一，FFXIV Explorer 仍然是一个用于导航游戏文件内容的简单工具。
+
+[<Icon name="external" class="inline-icon"/> ResLogger2](https://rl2.perchbird.dev/Downloads)
+: 游戏中所有已知资源路径的集中存储库。被上述许多工具和服务广泛使用。
+
+### 运行时
+
+对于从静态游戏文件或 lodestone 无法获得的数据，可以将项目构建为插件，其中可以使用来自游戏会话的运行时信息。
+
+[<Icon name="external" class="inline-icon"/> Dalamud](https://dalamud.dev/)
+: Dalamud 是 FFXIV 的主要插件生态系统，是构建运行时工具和实用程序的绝佳起点。

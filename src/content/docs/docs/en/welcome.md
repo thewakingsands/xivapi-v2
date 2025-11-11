@@ -26,6 +26,7 @@ Highlights include:
 - **[Full-dataset search](/en/docs/guides/search/):** Any field can be used in
   search queries and filters to help find what you're looking for - even if
   nobody knows what it means!
+  friendly formats, no further processing required.
 - **[Built in the open](/en/docs/software/):** The API, its dependencies, and much
   of the FFXIV developer ecosystem is proudly open source. See how it all ticks,
   or jump in and lend a hand!

@@ -1,35 +1,32 @@
 ---
-title: Searching Sheets
+title: 搜索表格
 sidebar:
   order: 4
 reference:
   href: /api/docs#tag/search
-  description: OpenAPI specification for the search endpoint.
+  description: 搜索端点的 OpenAPI 规范。
 ---
 
-The search endpoint finds sheet rows that match a provided query, and sorts them
-by relevance.
+import AITranslated from 'components/asides/AITranslated.astro';
 
-Much of the API surface of search is shared with the sheet endpoints. This page
-focuses on search-specific behavior, please refer to the documentation for
-[sheet endpoints] or the search [api reference] for more details.
+<AITranslated />
 
-[sheet endpoints]: /en/docs/guides/sheets/
-[api reference]: /api/docs#tag/search
+搜索端点查找与提供的查询匹配的表格行，并按相关性对它们进行排序。
 
-## Query
+搜索的许多 API 表面与表格端点共享。本页重点关注搜索特定的行为，有关更多详细信息，请参阅[表格端点]文档或搜索 [API 参考]。
 
-The `query` parameter is the core API for search, controlling both result
-relevance and filtering. Queries are written in a powerful query language,
-outlined below.
+[表格端点]: /zh-cn/docs/guides/sheets/
+[API 参考]: /api/docs#tag/search
 
-Queries are executed against the sheets specified by the `sheets` parameter.
+## 查询
 
-### Clauses
+`query` 参数是搜索的核心 API，控制结果相关性和过滤。查询使用强大的查询语言编写，如下所述。
 
-Clauses are the basic building block of queries, performing a comparison of a
-field with an expected value. They take the basic form of
-`[specifier][operation][value]`, i.e. `Name="Rainbow Drip"`.
+查询针对 `sheets` 参数指定的表格执行。
+
+### 子句
+
+子句是查询的基本构建块，执行字段与预期值的比较。它们采用 `[specifier][operation][value]` 的基本形式，即 `Name="Rainbow Drip"`。
 
 <details>
 <summary><code>query=Name="Rainbow Drip"</code></summary>
@@ -48,13 +45,11 @@ field with an expected value. They take the basic form of
 
 </details>
 
-### Specifiers
+### 指定符
 
-Similar to [field filters], fields that are nested within structural fields can
-be searched by specifying the full path to the field. Dot notation is used for
-structs and relationships, and array access notation for arrays.
+类似于[字段过滤器]，可以通过指定字段的完整路径来搜索嵌套在结构字段中的字段。点表示法用于结构体和关系，数组访问表示法用于数组。
 
-[field filters]: /en/docs/guides/sheets/#filtering
+[field filters]: /zh-cn/docs/guides/sheets/#filtering
 
 <details>
 <summary><code>query=ClassJob.Abbreviation="PCT"</code></summary>
@@ -120,8 +115,7 @@ structs and relationships, and array access notation for arrays.
 
 </details>
 
-To search for values in a language other than the request-wide `language`
-parameter, fields may be decorated with a language.
+要在请求范围的 `language` 参数以外的语言中搜索值，可以用语言装饰字段。
 
 <details>
 <summary><code>query=Name@ja="天使の筆"</code></summary>
@@ -142,11 +136,9 @@ parameter, fields may be decorated with a language.
 
 </details>
 
-### Operations & Values
+### 操作和值
 
-The examples above have been searching for fields using exact equality. To
-tailor queries further, multiple operations are available that can perform
-comparisons with type-aware semantics.
+上面的示例一直在使用精确相等搜索字段。为了进一步定制查询，可以使用多个操作来执行具有类型感知语义的比较。
 
 | Type | Example |
 | --- | --- |
@@ -217,21 +209,16 @@ comparisons with type-aware semantics.
 
 </details>
 
-### Multiple Clauses & Relevancy
+### 多子句和相关性
 
-One query may specify multiple clauses by seperating them with whitespace. All
-results will match at least one of the provided clauses.
+一个查询可以通过用空格分隔来指定多个子句。所有结果将至少匹配提供的子句之一。
 
-The ordering of results is defined by their relevance to the query - those that
-match more clauses will be sorted before those that match less. The value used
-for this ordering is returned in results as `score`.
+结果的排序由它们与查询的相关性定义——匹配更多子句的结果将排在匹配较少的结果之前。用于此排序的值在结果中作为 `score` 返回。
 
 <details>
 <summary><code>query=ClassJobLevel=92 Name="Rainbow Drip"</code></summary>
 
-In this example, all actions available at `ClassJobLevel` 92 are returned. As
-rainbow drip also matches the `Name` clause, it is prioritised over the other
-results.
+在此示例中，返回了 `ClassJobLevel` 92 可用的所有技能。由于 rainbow drip 也匹配 `Name` 子句，它优先于其他结果。
 
 ```json wrap "ClassJobLevel=92 Name=\"Rainbow Drip\"" "92" "Rainbow Drip"
 // /api/search?sheets=Action&fields=ClassJobLevel,Name&query=ClassJobLevel=92 Name="Rainbow Drip"
@@ -262,30 +249,24 @@ results.
 
 :::note
 
-The manner in which scores are calculated is not considered part of the API
-surface. Changes to the score calculation may be perfomed to improve result
-relevance. Any such adjustments could lead to changes of score values and
-resulting sort order of responses.
+计算分数的方式不被视为 API 表面的一部分。可能会执行分数计算的更改以改善结果相关性。任何此类调整都可能导致分数值和响应排序顺序的更改。
 
 :::
 
-### Filtering Results
+### 过滤结果
 
-By default, all query clauses **should** match, which leads to the relevance
-sorting outlined above. This behavior can be adjusted with prefixes:
+默认情况下，所有查询子句**应该**匹配，这导致上面概述的相关性排序。可以使用前缀调整此行为：
 
 `+clause`
-: Clause **must** match. Only matching results will be included in the response.
+: 子句**必须**匹配。只有匹配的结果才会包含在响应中。
 
 `-clause`
-: Clause **must not** match. Any matching results will be discarded.
+: 子句**不得**匹配。任何匹配的结果都将被丢弃。
 
 <details>
 <summary><code>query=+ClassJobCategory.PCT=true +ClassJobLevel=92</code></summary>
 
-This example searches for actions that must be usable by Pictomancers, and must
-become available at level 92. Rainbow Drip is the only action that matches this
-criteria.
+此示例搜索必须可由画师使用且必须在 92 级可用的技能。Rainbow Drip 是唯一符合此条件的技能。
 
 ```json wrap "+ClassJobCategory.PCT=true +ClassJobLevel=92" "Rainbow Drip"
 // /api/search?sheets=Action&fields=Name&query=+ClassJobCategory.PCT=true +ClassJobLevel=92
@@ -304,8 +285,7 @@ criteria.
 <details>
 <summary><code>query=ClassJobCategory.WAR=true -ClassJobLevel&lt;96</code></summary>
 
-This example searches for actions that should be usable by Warriors, and must
-not become available before level 96.
+此示例搜索应该可由战士使用且不得在 96 级之前可用的技能。
 
 ```json wrap "ClassJobCategory.WAR=true -ClassJobLevel<96"
 // /api/search?sheets=Action&fields=Name,ClassJobLevel&query=ClassJobCategory.WAR=true -ClassJobLevel<96
@@ -331,18 +311,14 @@ not become available before level 96.
 
 </details>
 
-To perform more complex queries, clauses may be grouped with parentheses. In a
-query, groups behave like a single clause, with an operation defined by the
-sub-query inside.
+为了执行更复杂的查询，可以用括号对子句进行分组。在查询中，组的行为类似于单个子句，操作由内部的子查询定义。
 
-For example, the simplified query `+a +(b c)` will return all results that match
-both `a` and at least one of `b` or `c`.
+例如，简化的查询 `+a +(b c)` 将返回同时匹配 `a` 和至少一个 `b` 或 `c` 的所有结果。
 
 <details>
 <summary><code>query=+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)</code></summary>
 
-This example searches for actions that are usable by a Pictomancer that _also_
-become available at level 80 or 90.
+此示例搜索可由画师使用且_也_在 80 级或 90 级可用的技能。
 
 ```json wrap "+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)" "80" "90"
 // /api/search?sheets=Action&fields=Name,ClassJobLevel&query=+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)
@@ -370,28 +346,22 @@ become available at level 80 or 90.
 
 </details>
 
-:::caution[Query URI encoding]
+:::caution[查询 URI 编码]
 
-It is important to ensure that queries have been encoded to a URI-safe string
-when executing API requests, as characters such as `+` have alternate behavior
-if left in plaintext.
+在执行 API 请求时，确保查询已编码为 URI 安全字符串非常重要，因为诸如 `+` 之类的字符如果以纯文本形式保留，会有替代行为。
 
-Utilities for performing this encoding are available in most environments, i.e.
-`encodeURIComponent` in JavaScript.
+大多数环境都提供了执行此编码的实用程序，例如 JavaScript 中的 `encodeURIComponent`。
 
 :::
 
-## Querying Multiple Sheets
+## 查询多个表格
 
-In addition to querying a single sheet as shown above, a query can be executed
-across multiple sheets simultaneously. When doing so, results from all queried
-sheets will be merged and sorted by their relevance.
+除了如上所示查询单个表格外，还可以同时跨多个表格执行查询。这样做时，来自所有查询表格的结果将合并并按相关性排序。
 
 <details>
 <summary><code>sheets=Action,Item&query=Name~"rainbow"</code></summary>
 
-This example searches for both actions _and_ items that contain "rainbow" in
-their name.
+此示例搜索名称中包含"rainbow"的技能_和_物品。
 
 ```json wrap "sheets=Action,Item" "Action" "Item"
 // /api/search?sheets=Action,Item&fields=Name&query=Name~"rainbow"
@@ -418,32 +388,20 @@ their name.
 
 </details>
 
-When performing searches on multiple sheets, queries may only access the
-_intersection_ of available fields. If fields are queried that are only present
-on a subset of the specified sheets, query resolution will fail, and an error
-will be returned.
+在多个表格上执行搜索时，查询只能访问可用字段的_交集_。如果查询的字段仅存在于指定表格的子集上，查询解析将失败，并返回错误。
 
-## Pagination
+## 分页
 
-The search endpoint accepts a `limit` parameter, with equivalent behavior to the
-[parameter of the same name][sheets-multiple-rows] accepted by sheet endpoints.
+搜索端点接受 `limit` 参数，其行为与表格端点接受的[同名参数][sheets-multiple-rows]等效。
 
-If a response contains a subset of the full result set, a cursor value is
-provided in the `next` property. Further results may be obtained by passing this
-value to the `cursor` parameter in a new request. When querying with a cursor,
-the `sheets` and `query` parameters are ignored, as the cursor is already
-operating on a previous request's dataset.
+如果响应包含完整结果集的子集，则在 `next` 属性中提供游标值。可以通过在新请求中将此值传递给 `cursor` 参数来获得更多结果。使用游标查询时，`sheets` 和 `query` 参数将被忽略，因为游标已经在先前请求的数据集上操作。
 
-[sheets-multiple-rows]: /en/docs/guides/sheets/#multiple-rows
+[sheets-multiple-rows]: /zh-cn/docs/guides/sheets/#multiple-rows
 
 <details>
 <summary><code>query=Name~"rainbow"&limit=2</code></summary>
 
-This is an example query from [Operations & Values] that returns 4 total
-results, however the result limit has been set at 2 results. The first response
-contains a cursor in `next`, and the second request uses this cursor to fetch
-the remaining 2 results. No `next` is present on the second response, signalling
-that no further results are present.
+这是来自[操作和值]的示例查询，返回总共 4 个结果，但结果限制已设置为 2 个结果。第一个响应在 `next` 中包含游标，第二个请求使用此游标获取剩余的 2 个结果。第二个响应上不存在 `next`，表示没有更多结果。
 
 [Operations & Values]: #operations--values
 

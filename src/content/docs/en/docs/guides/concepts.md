@@ -115,4 +115,4 @@ are not perfectly comprehensive or accurate.
 
 Schemas that are used by XIVAPI are listed on the [software] page.
 
-[software]: /docs/software/
+[software]: /en/docs/software/

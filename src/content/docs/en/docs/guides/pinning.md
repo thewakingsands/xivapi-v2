@@ -18,8 +18,8 @@ API won't change until you're ready to update it.
 In addition, pins can be used to view data as it was in any prior game version
 that has been recorded by the API.
 
-[versions]: /docs/guides/concepts/#versions
-[schemas]: /docs/guides/concepts/#schemas
+[versions]: /en/docs/guides/concepts/#versions
+[schemas]: /en/docs/guides/concepts/#schemas
 
 ## Game Versions
 
@@ -79,7 +79,7 @@ you wish to use.
 : Picks the most recent schema available for the game version the request targets.
 
 `exdschema@2:rev:<revision>`
-: Uses the schema as of the specified [git revision](https://git-scm.com/docs/revisions).
+: Uses the schema as of the specified [git revision](https://git-scm.com/en/docs/revisions).
 
 EXDSchema uses the `exdschema@2:rev:<revision>` form for canonical specifiers,
 with the full SHA-1 object name for the resolved commit as the revision.
