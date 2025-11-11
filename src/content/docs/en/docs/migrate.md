@@ -13,7 +13,7 @@ This document is intended to outline the key differences between v1 and v2, and
 assist in efforts to migrate to the new version. For full documentation of the
 v2 API, refer to the [guides] and [api reference].
 
-[guides]: /en/docs/guides/
+[guides]: /en/docs/guides/concepts
 [api reference]: /api/docs
 
 ## Game Content

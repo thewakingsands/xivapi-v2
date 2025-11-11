@@ -6,14 +6,15 @@ next: false
 
 import AITranslated from 'components/asides/AITranslated.astro';
 import { Icon } from '@astrojs/starlight/components';
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 <AITranslated />
 
 
 如果没有自 FFXIV 发布以来围绕它形成的广泛开发者社区，以及投入到构建和维护我们期望的工具和生态系统中的无数小时，这个 API 根本不可能存在。
 
-XIVAPI 诞生自开源社区，以开源形式发布，并将始终贡献给开源社区。您可以在 [<Icon name="github" class="inline-icon"/> xivapi]([xivapi_group]) 查看与之相关的项目。
-您也可以在 [<Icon name="github" class="inline-icon"/> thewakingsands]([ffcafe_group]) 查看 FFCafe 的相关项目。
+XIVAPI 诞生自开源社区，以开源形式发布，并将始终贡献给开源社区。您可以在 [<Icon name="github" class="inline-icon"/> xivapi][xivapi_group] 查看与之相关的项目。
+您也可以在 [<Icon name="github" class="inline-icon"/> thewakingsands][ffcafe_group] 查看 FFCafe 的相关项目。
 
 [xivapi_group]: https://github.com/xivapi
 [ffcafe_group]: https://github.com/thewakingsands
@@ -63,11 +64,11 @@ XIVAPI 可以通过任意 HTTP 请求工具使用。您也可以使用社区维�
 [openapi]: /api/openapi.json
 [docs]: /api/docs
 
-## 替代方案
+<AnchorHeading id="alternatives" level={2}>替代方案</AnchorHeading>
 
 XIVAPI 并不适合每个用例——也不试图做到这一点！FFXIV 开发者社区提供了极其广泛的替代工具和服务选择。下面的列表是其中的一小部分，可能更适合您要实现的目标。
 
-### Lodestone 数据
+<AnchorHeading id="lodestone-data" level={3}>Lodestone 数据</AnchorHeading>
 
 FFXIV 的官方网站 Lodestone 有公开可访问的页面，包含有关角色、自由公司等的信息。有一些库和/或服务可用于读取此信息以供使用。
 

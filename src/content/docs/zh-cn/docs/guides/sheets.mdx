@@ -8,6 +8,7 @@ reference:
 ---
 
 import AITranslated from 'components/asides/AITranslated.astro';
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 <AITranslated />
 
@@ -34,7 +35,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 [concepts-localisations]: /zh-cn/docs/guides/concepts/#editions--localisations
 
-## 字段
+<AnchorHeading id="fields" level={2}>字段</AnchorHeading>
 
 字段构成表格端点响应的大部分。有许多工具可用于过滤和调整字段在响应中的表示方式。
 
@@ -217,7 +218,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 </details>
 
-### 瞬态表格
+<AnchorHeading id="transient-sheets" level={3}>瞬态表格</AnchorHeading>
 
 如[之前概述][transient sheets]，相关数据可能作为实现细节拆分为两个或更多表格。为了减少检索数据所需的请求数量，API 尝试查找瞬态表格，并在可用时将其内容包含在顶级 `transient` 键中。
 
@@ -250,7 +251,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 [transient sheets]: /zh-cn/docs/guides/concepts/#transient-sheets
 
-## 多行
+<AnchorHeading id="multiple-rows" level={2}>多行</AnchorHeading>
 
 上面的所有示例都使用了单行端点 `/api/sheet/{sheet}/{row}`。如果需要来自同一表格的多行，可以使用行列表端点。
 

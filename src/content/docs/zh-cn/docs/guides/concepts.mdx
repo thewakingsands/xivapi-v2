@@ -7,12 +7,13 @@ prev: false
 ---
 
 import AITranslated from 'components/asides/AITranslated.astro';
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 <AITranslated />
 
 在 FFXIV 开发的上下文中，有一些概念和术语用法具有特定含义。虽然 XIVAPI 抽象了这些细节中的大部分，但有几个特定概念对于有效使用其功能至关重要，下面详细说明。
 
-## 版本
+<AnchorHeading id="versions" level={2}>版本</AnchorHeading>
 
 作为实时服务 MMO，FFXIV 定期接收"补丁"和"热修复"。这些通常涉及游戏客户端文件的更新。这些更新之一之后的游戏文件内容被视为**版本**，通常以引入更改的补丁命名。在更新之间，游戏文件是完全静态的——它们在游戏过程中永远不会更新或修改。
 
@@ -40,7 +41,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 表格将定期包含充当类似外键的字段，通过其 ID 引用其他表格中的行。这些链接称为**关系**。在许多情况下，这些关系的目标表格可以是多个不同表格中的一个——选择目标表格的方式因字段而异，最终由数据集外部的游戏逻辑决定。
 
-### 版本和本地化
+<AnchorHeading id="editions--localisations" level={3}>版本和本地化</AnchorHeading>
 
 FFXIV 正式本地化为日语、英语、德语和法语。这些本地化都使用相同的"全球"游戏客户端，包含为所有 4 个语言环境准备的内容。
 
@@ -52,7 +53,7 @@ FFXIV 正式本地化为日语、英语、德语和法语。这些本地化都�
 
 :::
 
-### 瞬态表格
+<AnchorHeading id="transient-sheets" level={3}>瞬态表格</AnchorHeading>
 
 在某些情况下，表格可能包含既需要随时可用且经常使用的数据，又包含不经常访问和/或加载缓慢的数据。为了处理这个问题，表格偶尔会沿着该访问要求线拆分为两个或更多单独的表格，所有表格共享它们的行 ID。
 
@@ -60,8 +61,7 @@ FFXIV 正式本地化为日语、英语、德语和法语。这些本地化都�
 
 例如，`Action` 表格包含有关玩家和敌人技能的数据。虽然这些数据中的大部分在整个游戏中经常用于显示技能详情，但技能的描述仅在鼠标悬停提示中显示。因此，描述存储在 `ActionTransient` 表格中，而不是 `Action` 本身。白魔法师技能"Cure"的数据可以在两个表格的行 ID `120` 处找到。
 
-
-## 模式
+<AnchorHeading id="schemas" level={2}>模式</AnchorHeading>
 
 游戏文件包含有关表格结构的最少信息。对于任何表格；只有其名称、支持的语言、字段数量和这些字段的类型可用。
 
