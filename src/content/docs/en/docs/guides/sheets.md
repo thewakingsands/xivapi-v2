@@ -19,10 +19,12 @@ Sheets with user-facing strings are commonly localised into all the languages
 supported by the game client. For more details on localisations and game
 editions, refer to [Important Concepts][concepts-localisations].
 
-While XIVAPI defaults to English text in responses, other languages may be
+While XIVAPI defaults to Simplified Chinese text in responses, other languages may be
 requested with the `language` parameter.
 
-```json /language=(ja|en|de|fr)/
+```json /language=(chs|ja|en|de|fr|ko)/
+// /api/sheet/Item/42589?fields=Name&language=chs
+{ "fields": { "Name": "天使之笔" } }
 // /api/sheet/Item/42589?fields=Name&language=ja
 { "fields": { "Name": "天使の筆" } }
 // /api/sheet/Item/42589?fields=Name&language=en
@@ -31,6 +33,8 @@ requested with the `language` parameter.
 { "fields": { "Name": "Engelspinsel" } }
 // /api/sheet/Item/42589?fields=Name&language=fr
 { "fields": { "Name": "Pinceau angélique" } }
+// /api/sheet/Item/42589?fields=Name&language=ko
+{ "fields": { "Name": "천사의 붓" } }
 ```
 
 [concepts-localisations]: /en/docs/guides/concepts/#editions--localisations
@@ -170,7 +174,7 @@ request.
 // /api/sheet/Item/42589?fields=Name,Name@lang(ja)
 {
   "fields": {
-    "Name": "Angel Brush",
+    "Name": "天使之笔",
     "Name@lang(ja)": "天使の筆"
   }
 }
