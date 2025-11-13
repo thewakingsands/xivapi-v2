@@ -24,6 +24,28 @@ import CafeNotSupported from 'components/asides/CafeNotSupported.astro';
 
 <CafeNotSupported tag="game-versions" />
 
+<del>
+所有从游戏文件派生数据的 API 端点都接受一个 `version` 参数。当指定该参数时，响应中的数值会反映该版本下的数据内容。如果未指定，则默认使用版本 `latest`，即始终从最新可用的游戏版本中获取数据。~~
+
+可查询的所有版本列表可以通过 API 获取，详情请参阅 [API 参考文档][version-reference]。
+
+[version-reference]: /api/docs#tag/versions/GET/version
+
+#### 示例
+
+在 [FFXIV Patch 7.1][7-1-battle-system] 中，许多玩家技能如往常一样进行了调整。例如，骑士的技能「保护」在该版本中射程增加了 10 米。
+
+```json /version=7.[01]/ /"Range": ([12]0)/
+// /api/sheet/Action/27?fields=Range&version=7.0
+{ "fields": { "Range": 10 } }
+
+// /api/sheet/Action/27?fields=Range&version=7.1
+{ "fields": { "Range": 20 } }
+```
+</del>
+
+[7-1-battle-system]: https://na.finalfantasyxiv.com/lodestone/topics/detail/9b42b2425f3a680caea3281ccd65c99677cb00e2/#random-507446d7e879c2a5e054cacddefcd58f77df3e3d
+
 ## 模式
 
 提供表格数据的 API 端点还接受 `schema` 参数。指定的模式将在从表格读取数据时使用，并用于解释提供的任何字段过滤器。如果省略，将使用请求的游戏版本的最新模式。
