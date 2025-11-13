@@ -4,6 +4,8 @@ sidebar:
   order: 2
 ---
 
+import CafeNotSupported from 'components/asides/CafeNotSupported.astro';
+
 As outlined in important concepts, new [game versions][versions] may result in
 arbitrary breaking changes, and [schemas] may receive changes from the community
 to fix or improve them.
@@ -23,6 +25,9 @@ that has been recorded by the API.
 
 ## Game Versions
 
+<CafeNotSupported tag="game-versions" />
+
+<del>
 All API endpoints that serve data derived from game files accept a `version`
 parameter. When specified, values in the response will represent how they were
 at the version that was requested. If omitted, the version `latest` will be
@@ -47,6 +52,7 @@ yalms.
 // /api/sheet/Action/27?fields=Range&version=7.1
 { "fields": { "Range": 20 } }
 ```
+</del>
 
 [7-1-battle-system]: https://na.finalfantasyxiv.com/lodestone/topics/detail/9b42b2425f3a680caea3281ccd65c99677cb00e2/#random-507446d7e879c2a5e054cacddefcd58f77df3e3d
 

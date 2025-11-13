@@ -1,15 +1,16 @@
 ---
 import { Aside } from '@astrojs/starlight/components'
 import { getLangFromUrl, useTranslatedPath } from 'i18n/utils'
+import { ui } from 'i18n/ui'
 
-const translatedPath = useTranslatedPath(getLangFromUrl(Astro.url))
+const lang = getLangFromUrl(Astro.url)
+const translatedPath = useTranslatedPath(lang)
+const t = ui[lang].cafeNotSupported
 
 const { tag } = Astro.props
 const link = translatedPath(`/docs/guides/difference${tag ? `#${tag}` : ''}`)
 ---
 
 <Aside type="caution"
-  >此处描述的是原版 XIVAPI 的功能，由 CAFE 提供的 XIVAPI
-  服务不支持此功能。详情请参考<a href={link} target="_blank">此页面</a
-  >。如果您需要此功能，请使用国际服版本。</Aside
+  >{t.text}<a href={link} target="_blank">{t.linkText}</a>{t.suffix}</Aside
 >

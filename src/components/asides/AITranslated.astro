@@ -1,12 +1,13 @@
 ---
 import { Aside } from '@astrojs/starlight/components'
+import { getLangFromUrl } from 'i18n/utils'
+import { ui } from 'i18n/ui'
+
+const lang = getLangFromUrl(Astro.url)
+const t = ui[lang].aiTranslated
 
 const title = encodeURIComponent(`doc: ${Astro.url.pathname}`)
 const link = `https://github.com/thewakingsands/xivapi-v2/issues/new?title=${title}`
 ---
 
-<Aside
-  >本文档由 AI 翻译。如有错误，请参考英文版本或<a href={link} target="_blank"
-    >提交反馈</a
-  >。</Aside
->
+<Aside>{t.text}<a href={link} target="_blank">{t.linkText}</a>{t.suffix}</Aside>

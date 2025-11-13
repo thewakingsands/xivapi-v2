@@ -7,21 +7,21 @@ next: false
 import { Icon } from '@astrojs/starlight/components';
 
 Without the broad community of developers that has formed around FFXIV since its
-release, and the uncountable hours put into building and maintaing the tools and
+release, and the uncountable hours put into building and maintaining the tools and
 ecosystem we've come to expect, this API simply could not exist.
 
-XIVAPI makes use of, is, and will always be open source. Many of the projects
-associated with it can be found in the [github organisation].
+XIVAPI was born from the open source community, is released as open source, and will always contribute to the open source community. You can view related projects at [<Icon name="github" class="inline-icon"/> xivapi][xivapi_group].
+You can also view FFCafe related projects at [<Icon name="github" class="inline-icon"/> thewakingsands][ffcafe_group].
 
-[github organisation]: https://github.com/xivapi
+[xivapi_group]: https://github.com/xivapi
+[ffcafe_group]: https://github.com/thewakingsands
 
 ## Behind the Scenes
 
-These projects are directly used by, or form part of, XIVAPI itself.
+XIVAPI uses or is supported by the following projects:
 
 [<Icon name="github" class="inline-icon"/> xivapi/static](https://github.com/xivapi/static)
-: The website you're reading this on! Supplementary pages, including
-  documentation and utilities, are served as a static site built using Astro.
+: The official XIVAPI documentation website, including documentation and utilities, built with Astro.
 
 [<Icon name="github" class="inline-icon"/> ackwell/boilmaster](https://github.com/ackwell/boilmaster)
 : The API server itself, responsible for everything under `/api`. Boilmaster has
@@ -37,6 +37,17 @@ These projects are directly used by, or form part of, XIVAPI itself.
 : The service that powers automatic version discovery throughout the API. With
   Thaliak, we can be sure that the API remains up to date with the latest game
   data.
+
+The FFCafe version also uses the following projects:
+
+[<Icon name="github" class="inline-icon"/> thewakingsands/xivapi-v2](https://github.com/thewakingsands/xivapi-v2)
+: The FFCafe version of the XIVAPI documentation website (this website).
+
+[<Icon name="github" class="inline-icon"/> thewakingsands/boilmaster](https://github.com/thewakingsands/boilmaster)
+: Built based on the original Boilmaster project, used to provide the API server for the FFCafe version.
+
+[<Icon name="github" class="inline-icon"/> thewakingsands/ixion](https://github.com/thewakingsands/ixion)
+: FFXIV version update, management, and data file processing tool.
 
 
 ## API Clients

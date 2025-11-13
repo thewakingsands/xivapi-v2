@@ -8,11 +8,13 @@ data. From action tooltips to entire database applications and everything in
 between, XIVAPI provides a powerful and reliable data source with the
 information you need.
 
-If you have any questions not covered in the documentation, or intend to use
-XIVAPI in a production environment, it's recommended you join
-[the Discord server](https://discord.gg/MFFVHWC). Maintainers and frequent users
-of the API are regularly around to help, and any live service announcements will
-be posted there first.
+This service is a partial compatibility implementation of 
+[XIVAPI](https://v2.xivapi.com). Please read 
+[Differences from the Official Version](/en/docs/guides/difference/) before 
+using it. If you encounter any issues with this service, please 
+[create an issue](https://github.com/thewakingsands/xivapi-v2/issues/new). For 
+questions about the official XIVAPI version, you can join the 
+[Discord server](https://discord.gg/MFFVHWC).
 
 ## Features
 
@@ -36,5 +38,4 @@ The API can _only_ provide data that is found in the game's client files. It has
 no access to server-side information such as players or free companies, nor
 runtime information such as inventory or equipment.
 
-If you're looking for runtime data, there are a few adjacent projects that may
-offer what you need listed on [the software page](/en/docs/software/#alternatives).
+If you wish to access this data, you can find alternatives on [the software page](/en/docs/software/#alternatives).

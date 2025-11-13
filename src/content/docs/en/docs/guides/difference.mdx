@@ -1,0 +1,32 @@
+---
+title: Differences from the Official Version
+sidebar:
+  order: 5
+---
+
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
+
+To save server resources, the XIVAPI service provided by FFCafe uses different update and storage methods.
+As a result, some capabilities differ from the official XIVAPI service. The main differences are as follows:
+
+<AnchorHeading id="language" level={3}>Supported Query Languages</AnchorHeading>
+
+This service supports querying data in the following languages:
+
+- Simplified Chinese `chs` (default/primary language)
+- English `en`, German `de`, French `fr`, Japanese `ja`
+
+Data is merged from the latest version of each client.
+
+<AnchorHeading id="sheets" level={3}>Supported Sheet List</AnchorHeading>
+
+This service does not support querying sheet data in subfolders (sheets with `/` characters in their names, mainly dialogue text).
+
+<AnchorHeading id="game-versions" level={3}>Version Control</AnchorHeading>
+
+This service does not currently support version control. All requests will use the latest version of data. The `version` parameter is invalid when querying sheet data.
+
+<AnchorHeading id="assets" level={3}>Assets</AnchorHeading>
+
+This service does not currently support asset requests. All related requests will return 404.
+
