@@ -7,13 +7,11 @@ reference:
   description: 搜索端点的 OpenAPI 规范。
 ---
 
-import AITranslated from 'components/asides/AITranslated.astro';
-
-<AITranslated />
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 搜索端点查找与提供的查询匹配的表格行，并按相关性对它们进行排序。
 
-搜索的许多 API 表面与表格端点共享。本页重点关注搜索特定的行为，有关更多详细信息，请参阅[表格端点]文档或搜索 [API 参考]。
+搜索端点与表格端点共用许多参数和响应结构。本页重点介绍搜索特有的行为，其他用法请参阅[表格端点]文档或搜索 [API 参考]。
 
 [表格端点]: /zh-cn/docs/guides/sheets/
 [API 参考]: /api/docs#tag/search
@@ -24,6 +22,8 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 查询针对 `sheets` 参数指定的表格执行。
 
+示例中的搜索词和返回名称使用英文，因此指定了 `language=en`。本服务在省略语言参数时默认使用 `chs`。下方响应仅展示相关部分，数据值、结果数量及排序可能随游戏数据和模式更新而变化。
+
 ### 子句
 
 子句是查询的基本构建块，执行字段与预期值的比较。它们采用 `[specifier][operation][value]` 的基本形式，即 `Name="Rainbow Drip"`。
@@ -32,7 +32,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 <summary><code>query=Name="Rainbow Drip"</code></summary>
 
 ```json wrap "Name=\"Rainbow Drip\"" "Rainbow Drip"
-// /api/search?sheets=Action&fields=Name&query=Name="Rainbow Drip"
+// /api/search?language=en&sheets=Action&fields=Name&query=Name="Rainbow Drip"
 {
   "results": [
     {
@@ -49,13 +49,13 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 类似于[字段过滤器]，可以通过指定字段的完整路径来搜索嵌套在结构字段中的字段。点表示法用于结构体和关系，数组访问表示法用于数组。
 
-[field filters]: /zh-cn/docs/guides/sheets/#filtering
+[字段过滤器]: /zh-cn/docs/guides/sheets/#filtering
 
 <details>
 <summary><code>query=ClassJob.Abbreviation="PCT"</code></summary>
 
 ```json wrap "ClassJob.Abbreviation=\"PCT\""
-// /api/search?sheets=Action&fields=Name&query=ClassJob.Abbreviation="PCT"
+// /api/search?language=en&sheets=Action&fields=Name&query=ClassJob.Abbreviation="PCT"
 {
   "results": [
     {
@@ -77,7 +77,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 <summary><code>query=BaseParam[].Name="Spell Speed"</code></summary>
 
 ```json wrap "BaseParam[].Name=\"Spell Speed\"" "Spell Speed"
-// /api/search?sheets=Item&fields=Name,BaseParam[].Name&query=BaseParam[].Name="Spell Speed"
+// /api/search?language=en&sheets=Item&fields=Name,BaseParam[].Name&query=BaseParam[].Name="Spell Speed"
 {
   "results": [
     {
@@ -121,7 +121,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 <summary><code>query=Name@ja="天使の筆"</code></summary>
 
 ```json wrap "Name@ja=\"天使の筆\"" "Angel Brush"
-// /api/search?sheets=Item&fields=Name&query=Name@ja="天使の筆"
+// /api/search?language=en&sheets=Item&fields=Name&query=Name@ja="天使の筆"
 {
   "results": [
     {
@@ -136,27 +136,27 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 </details>
 
-### 操作和值
+<AnchorHeading id="operations--values" level={3}>操作和值</AnchorHeading>
 
 上面的示例一直在使用精确相等搜索字段。为了进一步定制查询，可以使用多个操作来执行具有类型感知语义的比较。
 
-| Type | Example |
+| 类型 | 示例 |
 | --- | --- |
-| String | `"value"` |
-| Number | `1`, `-1`, `1.0` |
-| Boolean | `true`, `false` |
+| 字符串 | `"value"` |
+| 数字 | `1`, `-1`, `1.0` |
+| 布尔值 | `true`, `false` |
 
-| Operation | Type | Comparison |
+| 操作 | 类型 | 比较方式 |
 | --- | --- | --- |
-| `=` | any | Exact equality |
-| `>=`, `>`, `<=`, `<` | number | Numeric comparison |
-| `~` | string | Partial string comparison |
+| `=` | 任意 | 精确相等 |
+| `>=`, `>`, `<=`, `<` | 数字 | 数值比较 |
+| `~` | 字符串 | 部分字符串匹配 |
 
 <details>
 <summary><code>query=Name~"rainbow"</code></summary>
 
 ```json wrap "Name~\"rainbow\"" "Rainbow"
-// /api/search?sheets=Action&fields=Name&query=Name~"rainbow"
+// /api/search?language=en&sheets=Action&fields=Name&query=Name~"rainbow"
 {
   "results": [
     {
@@ -185,7 +185,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 <summary><code>query=Recast100ms>3000</code></summary>
 
 ```json wrap "Recast100ms>3000"
-// /api/search?sheets=Action&fields=Name,Recast100ms&query=Recast100ms>3000
+// /api/search?language=en&sheets=Action&fields=Name,Recast100ms&query=Recast100ms>3000
 {
   "results": [
     {
@@ -221,7 +221,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 在此示例中，返回了 `ClassJobLevel` 92 可用的所有技能。由于 rainbow drip 也匹配 `Name` 子句，它优先于其他结果。
 
 ```json wrap "ClassJobLevel=92 Name=\"Rainbow Drip\"" "92" "Rainbow Drip"
-// /api/search?sheets=Action&fields=ClassJobLevel,Name&query=ClassJobLevel=92 Name="Rainbow Drip"
+// /api/search?language=en&sheets=Action&fields=ClassJobLevel,Name&query=ClassJobLevel=92 Name="Rainbow Drip"
 {
   "results": [
     {
@@ -249,13 +249,13 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 :::note
 
-计算分数的方式不被视为 API 表面的一部分。可能会执行分数计算的更改以改善结果相关性。任何此类调整都可能导致分数值和响应排序顺序的更改。
+分数计算方式不属于 API 的稳定性保证。服务可能调整算法以改善相关性，因此分数值及结果排序都可能变化。
 
 :::
 
 ### 过滤结果
 
-默认情况下，所有查询子句**应该**匹配，这导致上面概述的相关性排序。可以使用前缀调整此行为：
+没有前缀的子句是用于相关性评分的可选匹配（**should**）。没有必选（`+`）子句时，如果存在可选子句，则至少要匹配其中一个；存在必选子句时，可选子句只影响相关性，不会增加必选条件。可以使用以下前缀改变行为：
 
 `+clause`
 : 子句**必须**匹配。只有匹配的结果才会包含在响应中。
@@ -269,7 +269,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 此示例搜索必须可由画师使用且必须在 92 级可用的技能。Rainbow Drip 是唯一符合此条件的技能。
 
 ```json wrap "+ClassJobCategory.PCT=true +ClassJobLevel=92" "Rainbow Drip"
-// /api/search?sheets=Action&fields=Name&query=+ClassJobCategory.PCT=true +ClassJobLevel=92
+// /api/search?language=en&sheets=Action&fields=Name&query=+ClassJobCategory.PCT=true +ClassJobLevel=92
 {
   "results": [
     {
@@ -288,7 +288,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 此示例搜索应该可由战士使用且不得在 96 级之前可用的技能。
 
 ```json wrap "ClassJobCategory.WAR=true -ClassJobLevel<96"
-// /api/search?sheets=Action&fields=Name,ClassJobLevel&query=ClassJobCategory.WAR=true -ClassJobLevel<96
+// /api/search?language=en&sheets=Action&fields=Name,ClassJobLevel&query=ClassJobCategory.WAR=true -ClassJobLevel<96
 {
   "results": [
     {
@@ -321,7 +321,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 此示例搜索可由画师使用且_也_在 80 级或 90 级可用的技能。
 
 ```json wrap "+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)" "80" "90"
-// /api/search?sheets=Action&fields=Name,ClassJobLevel&query=+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)
+// /api/search?language=en&sheets=Action&fields=Name,ClassJobLevel&query=+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)
 {
   "results": [
     {
@@ -364,7 +364,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
 此示例搜索名称中包含"rainbow"的技能_和_物品。
 
 ```json wrap "sheets=Action,Item" "Action" "Item"
-// /api/search?sheets=Action,Item&fields=Name&query=Name~"rainbow"
+// /api/search?language=en&sheets=Action,Item&fields=Name&query=Name~"rainbow"
 {
   "results": [
     {
@@ -396,6 +396,8 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 如果响应包含完整结果集的子集，则在 `next` 属性中提供游标值。可以通过在新请求中将此值传递给 `cursor` 参数来获得更多结果。使用游标查询时，`sheets` 和 `query` 参数将被忽略，因为游标已经在先前请求的数据集上操作。
 
+继续分页时应保持相同的 `language`、`schema` 和字段过滤器。数据更新后应重新发起原始查询，不要继续使用旧游标。新版本启用后，搜索索引会异步构建；在索引就绪前，搜索请求可能暂时返回 `503`。
+
 [sheets-multiple-rows]: /zh-cn/docs/guides/sheets/#multiple-rows
 
 <details>
@@ -403,10 +405,10 @@ import AITranslated from 'components/asides/AITranslated.astro';
 
 这是来自[操作和值]的示例查询，返回总共 4 个结果，但结果限制已设置为 2 个结果。第一个响应在 `next` 中包含游标，第二个请求使用此游标获取剩余的 2 个结果。第二个响应上不存在 `next`，表示没有更多结果。
 
-[Operations & Values]: #operations--values
+[操作和值]: #operations--values
 
 ```json wrap "limit=2" "4bce9ed3-74d7-4d4c-940f-4a918d204a58"
-// /api/search?fields=Name&sheets=Action&query=Name~"rainbow"&limit=2
+// /api/search?language=en&fields=Name&sheets=Action&query=Name~"rainbow"&limit=2
 {
   "next": "4bce9ed3-74d7-4d4c-940f-4a918d204a58",
   "results": [
@@ -420,7 +422,7 @@ import AITranslated from 'components/asides/AITranslated.astro';
     }
   ]
 }
-// /api/search?fields=Name&cursor=4bce9ed3-74d7-4d4c-940f-4a918d204a58&limit=2
+// /api/search?language=en&fields=Name&cursor=4bce9ed3-74d7-4d4c-940f-4a918d204a58&limit=2
 {
   "results": [
     {

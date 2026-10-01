@@ -4,11 +4,8 @@ prev: false
 next: false
 ---
 
-import AITranslated from 'components/asides/AITranslated.astro';
 import { Icon } from '@astrojs/starlight/components';
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
-
-<AITranslated />
 
 
 如果没有自 FFXIV 发布以来围绕它形成的广泛开发者社区，以及投入到构建和维护我们期望的工具和生态系统中的无数小时，这个 API 根本不可能存在。
@@ -21,19 +18,19 @@ XIVAPI 诞生自开源社区，以开源形式发布，并将始终贡献给开�
 
 ## 幕后
 
-XIVAPI 使用或由以下项目提供支持：
+上游 XIVAPI 项目使用或由以下项目提供支持：
 
 [<Icon name="github" class="inline-icon"/> xivapi/static](https://github.com/xivapi/static)
 : XIVAPI 官方文档网站，包括文档和实用程序，由 Astro 构建。
 
 [<Icon name="github" class="inline-icon"/> ackwell/boilmaster](https://github.com/ackwell/boilmaster)
-: API 服务器本身，负责 `/api` 下的一切。Boilmaster 从一开始就编写为形成一个可扩展和可维护的平台，可以在未来几年为 XIVAPI 提供支持。
+: 上游 API 服务器，负责 `/api` 下的接口。Boilmaster 旨在提供可扩展、可维护的平台，为 XIVAPI 提供长期支持。
 
 [<Icon name="github" class="inline-icon"/> xivdev/EXDSchema](https://github.com/xivdev/EXDSchema)
 : 整个 API 中使用的默认 excel 模式。如果没有 EXDSchema 和 SaintCoinach 模式的先例，查找和利用表格中的内容将变得非常困难。
 
 [<Icon name="external" class="inline-icon"/> Thaliak](https://thaliak.xiv.dev/)
-: 为整个 API 的自动版本发现提供支持的服务。有了 Thaliak，我们可以确保 API 保持与最新游戏数据的同步。
+: 上游 XIVAPI 使用的游戏版本发现服务。FFCafe 服务端则读取 ixion 发布的数据版本。
 
 FFCafe 版本还使用了以下项目：
 
@@ -41,10 +38,10 @@ FFCafe 版本还使用了以下项目：
 : FFCafe 版本的 XIVAPI 文档网站（即本网站）。
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/boilmaster](https://github.com/thewakingsands/boilmaster)
-: 基于原始 Boilmaster 项目构建，用于提供 FFCafe 版本的 API 服务端。
+: FFCafe 的 API 服务端，从 ixion 发布版本读取合并后的表格数据，通过独立的二进制资源索引提供图标和地图，并支持旧版 `/i/` 图标路径。
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/ixion](https://github.com/thewakingsands/ixion)
-: FFXIV 版本更新、管理及数据文件处理工具。
+: FFXIV 版本管理及数据处理工具，发布合并后的表格数据和带索引的图标、地图资源，供 FFCafe 服务端读取。
 
 ## API 客户端
 
@@ -70,7 +67,7 @@ XIVAPI 并不适合每个用例——也不试图做到这一点！FFXIV 开发�
 
 <AnchorHeading id="lodestone-data" level={3}>Lodestone 数据</AnchorHeading>
 
-FFXIV 的官方网站 Lodestone 有公开可访问的页面，包含有关角色、自由公司等的信息。有一些库和/或服务可用于读取此信息以供使用。
+FFXIV 的官方网站 Lodestone 有公开可访问的页面，包含角色、部队等信息。以下库和服务可用于读取这些信息。
 
 - [<Icon name="github" class="inline-icon"/> xivapi/nodestone](https://github.com/xivapi/nodestone): TypeScript，库或服务器。
 - [<Icon name="github" class="inline-icon"/> xivapi/godestone](https://github.com/xivapi/godestone): Go，库。
@@ -89,13 +86,13 @@ FFXIV 的官方网站 Lodestone 有公开可访问的页面，包含有关角色
 
 ### 本地游戏文件
 
-API 主要用于网页，在网页上游戏文件不容易访问。如果您知道您的代码将可以访问游戏安装，使用游戏数据库可能会比 API 快得多且功能更强大。
+API 主要用于不便直接访问游戏文件的网页环境。如果程序可以访问本地游戏安装，使用游戏数据读取库通常比调用 API 更快，支持的功能也更多。
 
 [<Icon name="github" class="inline-icon"/> NotAdam/Lumina](https://github.com/NotAdam/Lumina)
-: C#/.NET。社区中使用最广泛的游戏数据库。支持许多游戏文件格式，并提供生成的类库以便于使用表格数据。
+: C#/.NET。社区中广泛使用的游戏数据读取库，支持多种游戏文件格式，并提供生成的类型以便读取表格数据。
 
 [<Icon name="github" class="inline-icon"/> ackwell/ironworks](https://github.com/ackwell/ironworks)
-: Rust。为 XIVAPI 提供支持的数据库。模块化，支持常见文件格式并直接从游戏补丁文件读取。
+: Rust。XIVAPI 使用的游戏数据读取库，采用模块化设计，支持常见文件格式及直接读取游戏补丁文件。
 
 ### 探索
 

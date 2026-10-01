@@ -18,13 +18,13 @@ You can also view FFCafe related projects at [<Icon name="github" class="inline-
 
 ## Behind the Scenes
 
-XIVAPI uses or is supported by the following projects:
+The upstream XIVAPI project uses or is supported by the following projects:
 
 [<Icon name="github" class="inline-icon"/> xivapi/static](https://github.com/xivapi/static)
 : The official XIVAPI documentation website, including documentation and utilities, built with Astro.
 
 [<Icon name="github" class="inline-icon"/> ackwell/boilmaster](https://github.com/ackwell/boilmaster)
-: The API server itself, responsible for everything under `/api`. Boilmaster has
+: The upstream API server, responsible for everything under `/api`. Boilmaster has
   been written from the outset to form an extensible and maintainable platform
   that can power XIVAPI for years to come.
 
@@ -34,9 +34,8 @@ XIVAPI uses or is supported by the following projects:
   in sheets would be significantly harder.
 
 [<Icon name="external" class="inline-icon"/> Thaliak](https://thaliak.xiv.dev/)
-: The service that powers automatic version discovery throughout the API. With
-  Thaliak, we can be sure that the API remains up to date with the latest game
-  data.
+: The game-version discovery service used by upstream XIVAPI. FFCafe's server
+  instead loads published ixion releases.
 
 The FFCafe version also uses the following projects:
 
@@ -44,10 +43,13 @@ The FFCafe version also uses the following projects:
 : The FFCafe version of the XIVAPI documentation website (this website).
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/boilmaster](https://github.com/thewakingsands/boilmaster)
-: Built based on the original Boilmaster project, used to provide the API server for the FFCafe version.
+: FFCafe's API server. It loads merged sheet data from ixion releases and serves
+  icons and maps through a separate binary asset index. It also provides the
+  legacy `/i/` icon route.
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/ixion](https://github.com/thewakingsands/ixion)
-: FFXIV version update, management, and data file processing tool.
+: FFXIV version management and data processing tool. It publishes merged sheet
+  data and indexed icon/map resources consumed by FFCafe's server.
 
 
 ## API Clients

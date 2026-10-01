@@ -70,17 +70,16 @@ FFXIV is officially localised into Japanese, English, German, and French. These
 localisations all use the same "global" game client, containing content prepared
 for all 4 locales.
 
-In addition to the above, seperate Chinese and Korean game clients are
-available, each providing a localisation into their respective language. These
-clients follow different versioning to the global client, and usually contain
-slightly outdated content.
+Separate regional clients provide Simplified Chinese, Traditional Chinese and
+Korean localisations. Their release schedules and available content can differ
+from the global client.
 
-:::note[Limitations of XIVAPI locale support]
+:::note[Languages supported by this service]
 
-At time of writing, XIVAPI only provides data available in the global game
-client: Japanese, English, German, and French. Alternatives may be available for
-other game editions - If you operate an API-compatible service, please contact
-us so we can direct consumers looking for this data to you!
+FFCafe merges data from the latest processed version of each client. It supports
+Simplified Chinese (`chs`, the default), Traditional Chinese (`tc`), Japanese
+(`ja`), English (`en`), German (`de`), French (`fr`) and Korean (`ko`). A row or
+translation may not exist in every client version. See [service differences](/en/docs/guides/difference/#language).
 
 :::
 

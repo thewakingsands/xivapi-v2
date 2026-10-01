@@ -4,53 +4,32 @@ sidebar:
   order: 2
 ---
 
-import AITranslated from 'components/asides/AITranslated.astro';
-import CafeNotSupported from 'components/asides/CafeNotSupported.astro';
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
-<AITranslated />
-
-如重要概念中所述，新的[游戏版本][versions]可能导致任意破坏性更改，[模式]可能会收到来自社区的更改以修复或改进它们。
+如重要概念中所述，新的[游戏版本][versions]可能导致破坏性更改，社区也可能修正或改进[模式][schemas]。
 
 上述任何一种都可能影响 API 在响应中构建数据的方式——反过来，破坏任何依赖该结构使用 API 的代码。
 
-没有人希望收到未宣布的破坏性更改。XIVAPI 允许您"固定"游戏版本和模式，以确保您对 API 的使用不会改变，直到您准备好更新它。
-
-此外，可以使用固定来查看数据在 API 记录的任何先前游戏版本中的样子。
+本服务支持固定模式，但表格和搜索请求不支持选择历史游戏版本。固定模式可以固定字段名称和映射，却不会冻结数据，也无法保证游戏更新后的兼容性。资源接口使用独立的快照选择机制。
 
 [versions]: /zh-cn/docs/guides/concepts/#versions
 [schemas]: /zh-cn/docs/guides/concepts/#schemas
 
-## 游戏版本
+<AnchorHeading id="game-versions" level={2}>游戏版本</AnchorHeading>
 
-<CafeNotSupported tag="game-versions" />
+表格和搜索请求始终使用本地最新已启用的数据发布版本，其 `version` 查询参数会被忽略。响应中的 `version` 是发布版本标题，不是上游的版本哈希，也不能用于请求历史表格数据。
 
-<del>
-所有从游戏文件派生数据的 API 端点都接受一个 `version` 参数。当指定该参数时，响应中的数值会反映该版本下的数据内容。如果未指定，则默认使用版本 `latest`，即始终从最新可用的游戏版本中获取数据。~~
+`GET /api/version`（也可使用 `/api/versions`）列出本地保留的发布版本和更新状态。该列表仅供查看，不表示可以查询这些版本的历史数据，详见 [API 参考文档][version-reference]。
 
-可查询的所有版本列表可以通过 API 获取，详情请参阅 [API 参考文档][version-reference]。
+资源端点接受 `version=latest` 或已发布资源索引的完整游戏版本。资源快照独立于表格发布版本，详见[获取资源](/zh-cn/docs/guides/assets/#limitations)。
 
 [version-reference]: /api/docs#tag/versions/GET/version
 
-#### 示例
+<AnchorHeading id="schemas" level={2}>模式</AnchorHeading>
 
-在 [FFXIV Patch 7.1][7-1-battle-system] 中，许多玩家技能如往常一样进行了调整。例如，骑士的技能「保护」在该版本中射程增加了 10 米。
+提供表格数据的 API 端点还接受 `schema` 参数。指定的模式用于读取表格和解释字段过滤器。如果省略，将使用当前已启用数据版本对应的最新模式。
 
-```json /version=7.[01]/ /"Range": ([12]0)/
-// /api/sheet/Action/27?fields=Range&version=7.0
-{ "fields": { "Range": 10 } }
-
-// /api/sheet/Action/27?fields=Range&version=7.1
-{ "fields": { "Range": 20 } }
-```
-</del>
-
-[7-1-battle-system]: https://na.finalfantasyxiv.com/lodestone/topics/detail/9b42b2425f3a680caea3281ccd65c99677cb00e2/#random-507446d7e879c2a5e054cacddefcd58f77df3e3d
-
-## 模式
-
-提供表格数据的 API 端点还接受 `schema` 参数。指定的模式将在从表格读取数据时使用，并用于解释提供的任何字段过滤器。如果省略，将使用请求的游戏版本的最新模式。
-
-所有接受模式参数的请求也将在响应对象中包含 `schema` 值。该值被视为用于请求的模式的_规范_指定符——因此，建议记录该值，如果计划固定模式，则使用它。努力确保规范指定符是模式在某个时间点最稳定的表示。
+成功的表格行和搜索响应会包含 `schema` 值，即本次请求所用模式的_规范指定符_。建议记录此值，并在需要固定模式时使用；它用于稳定地标识某个时间点的模式。
 
 API 构建为支持多个社区模式源。在撰写本文时，EXDSchema 是唯一积极支持的源，有关其使用的详细信息，请参见下文。
 
@@ -59,7 +38,7 @@ API 构建为支持多个社区模式源。在撰写本文时，EXDSchema 是唯
 [EXDSchema][exdschema] git 存储库跟踪跨游戏版本的表格模式，并在 FFXIV 开发者社区中越来越广泛地使用。XIVAPI 提供了几种方法来指定您希望使用的 EXDSchema 映射。
 
 `exdschema@2:ver:request`
-: 选择请求目标的游戏版本可用的最新模式。
+: 选择当前数据发布版本对应的游戏版本可用的最新模式。
 
 `exdschema@2:rev:<revision>`
 : 使用指定 [git 修订版](https://git-scm.com/zh-cn/docs/revisions)的模式。

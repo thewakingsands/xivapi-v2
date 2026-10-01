@@ -25,6 +25,11 @@ outlined below.
 
 Queries are executed against the sheets specified by the `sheets` parameter.
 
+The examples use `language=en` because their search terms and returned names
+are English. Without a language parameter, this service defaults to `chs`.
+Responses below are excerpts; values, result counts and ordering can change
+with game data and schema updates.
+
 ### Clauses
 
 Clauses are the basic building block of queries, performing a comparison of a
@@ -35,7 +40,7 @@ field with an expected value. They take the basic form of
 <summary><code>query=Name="Rainbow Drip"</code></summary>
 
 ```json wrap "Name=\"Rainbow Drip\"" "Rainbow Drip"
-// /api/search?sheets=Action&fields=Name&query=Name="Rainbow Drip"
+// /api/search?language=en&sheets=Action&fields=Name&query=Name="Rainbow Drip"
 {
   "results": [
     {
@@ -60,7 +65,7 @@ structs and relationships, and array access notation for arrays.
 <summary><code>query=ClassJob.Abbreviation="PCT"</code></summary>
 
 ```json wrap "ClassJob.Abbreviation=\"PCT\""
-// /api/search?sheets=Action&fields=Name&query=ClassJob.Abbreviation="PCT"
+// /api/search?language=en&sheets=Action&fields=Name&query=ClassJob.Abbreviation="PCT"
 {
   "results": [
     {
@@ -82,7 +87,7 @@ structs and relationships, and array access notation for arrays.
 <summary><code>query=BaseParam[].Name="Spell Speed"</code></summary>
 
 ```json wrap "BaseParam[].Name=\"Spell Speed\"" "Spell Speed"
-// /api/search?sheets=Item&fields=Name,BaseParam[].Name&query=BaseParam[].Name="Spell Speed"
+// /api/search?language=en&sheets=Item&fields=Name,BaseParam[].Name&query=BaseParam[].Name="Spell Speed"
 {
   "results": [
     {
@@ -127,7 +132,7 @@ parameter, fields may be decorated with a language.
 <summary><code>query=Name@ja="天使の筆"</code></summary>
 
 ```json wrap "Name@ja=\"天使の筆\"" "Angel Brush"
-// /api/search?sheets=Item&fields=Name&query=Name@ja="天使の筆"
+// /api/search?language=en&sheets=Item&fields=Name&query=Name@ja="天使の筆"
 {
   "results": [
     {
@@ -164,7 +169,7 @@ comparisons with type-aware semantics.
 <summary><code>query=Name~"rainbow"</code></summary>
 
 ```json wrap "Name~\"rainbow\"" "Rainbow"
-// /api/search?sheets=Action&fields=Name&query=Name~"rainbow"
+// /api/search?language=en&sheets=Action&fields=Name&query=Name~"rainbow"
 {
   "results": [
     {
@@ -193,7 +198,7 @@ comparisons with type-aware semantics.
 <summary><code>query=Recast100ms>3000</code></summary>
 
 ```json wrap "Recast100ms>3000"
-// /api/search?sheets=Action&fields=Name,Recast100ms&query=Recast100ms>3000
+// /api/search?language=en&sheets=Action&fields=Name,Recast100ms&query=Recast100ms>3000
 {
   "results": [
     {
@@ -234,7 +239,7 @@ rainbow drip also matches the `Name` clause, it is prioritised over the other
 results.
 
 ```json wrap "ClassJobLevel=92 Name=\"Rainbow Drip\"" "92" "Rainbow Drip"
-// /api/search?sheets=Action&fields=ClassJobLevel,Name&query=ClassJobLevel=92 Name="Rainbow Drip"
+// /api/search?language=en&sheets=Action&fields=ClassJobLevel,Name&query=ClassJobLevel=92 Name="Rainbow Drip"
 {
   "results": [
     {
@@ -271,8 +276,10 @@ resulting sort order of responses.
 
 ### Filtering Results
 
-By default, all query clauses **should** match, which leads to the relevance
-sorting outlined above. This behavior can be adjusted with prefixes:
+Unprefixed clauses are optional (**should**) matches used for relevance. When
+there are no required (`+`) clauses, at least one optional clause must match if
+any are present. When required clauses exist, optional clauses affect relevance
+without adding a required condition. Prefixes change this behavior:
 
 `+clause`
 : Clause **must** match. Only matching results will be included in the response.
@@ -288,7 +295,7 @@ become available at level 92. Rainbow Drip is the only action that matches this
 criteria.
 
 ```json wrap "+ClassJobCategory.PCT=true +ClassJobLevel=92" "Rainbow Drip"
-// /api/search?sheets=Action&fields=Name&query=+ClassJobCategory.PCT=true +ClassJobLevel=92
+// /api/search?language=en&sheets=Action&fields=Name&query=+ClassJobCategory.PCT=true +ClassJobLevel=92
 {
   "results": [
     {
@@ -308,7 +315,7 @@ This example searches for actions that should be usable by Warriors, and must
 not become available before level 96.
 
 ```json wrap "ClassJobCategory.WAR=true -ClassJobLevel<96"
-// /api/search?sheets=Action&fields=Name,ClassJobLevel&query=ClassJobCategory.WAR=true -ClassJobLevel<96
+// /api/search?language=en&sheets=Action&fields=Name,ClassJobLevel&query=ClassJobCategory.WAR=true -ClassJobLevel<96
 {
   "results": [
     {
@@ -345,7 +352,7 @@ This example searches for actions that are usable by a Pictomancer that _also_
 become available at level 80 or 90.
 
 ```json wrap "+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)" "80" "90"
-// /api/search?sheets=Action&fields=Name,ClassJobLevel&query=+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)
+// /api/search?language=en&sheets=Action&fields=Name,ClassJobLevel&query=+ClassJobCategory.PCT=true +(ClassJobLevel=80 ClassJobLevel=90)
 {
   "results": [
     {
@@ -394,7 +401,7 @@ This example searches for both actions _and_ items that contain "rainbow" in
 their name.
 
 ```json wrap "sheets=Action,Item" "Action" "Item"
-// /api/search?sheets=Action,Item&fields=Name&query=Name~"rainbow"
+// /api/search?language=en&sheets=Action,Item&fields=Name&query=Name~"rainbow"
 {
   "results": [
     {
@@ -434,6 +441,11 @@ value to the `cursor` parameter in a new request. When querying with a cursor,
 the `sheets` and `query` parameters are ignored, as the cursor is already
 operating on a previous request's dataset.
 
+Keep the same `language`, `schema` and field filters when continuing a search.
+After a data update, restart the original query instead of reusing an old
+cursor. Search indexing runs asynchronously after activation of a new release;
+search requests may temporarily return `503` until indexing is ready.
+
 [sheets-multiple-rows]: /en/docs/guides/sheets/#multiple-rows
 
 <details>
@@ -448,7 +460,7 @@ that no further results are present.
 [Operations & Values]: #operations--values
 
 ```json wrap "limit=2" "4bce9ed3-74d7-4d4c-940f-4a918d204a58"
-// /api/search?fields=Name&sheets=Action&query=Name~"rainbow"&limit=2
+// /api/search?language=en&fields=Name&sheets=Action&query=Name~"rainbow"&limit=2
 {
   "next": "4bce9ed3-74d7-4d4c-940f-4a918d204a58",
   "results": [
@@ -462,7 +474,7 @@ that no further results are present.
     }
   ]
 }
-// /api/search?fields=Name&cursor=4bce9ed3-74d7-4d4c-940f-4a918d204a58&limit=2
+// /api/search?language=en&fields=Name&cursor=4bce9ed3-74d7-4d4c-940f-4a918d204a58&limit=2
 {
   "results": [
     {

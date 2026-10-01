@@ -9,6 +9,8 @@ heavy focus on stability for consumers, and providing a solid platform for years
 to come. To achieve this, it does not attempt to maintain backwards compatibilty
 with v1.
 
+FFCafe makes one asset-specific exception: existing V1 `/i/` icon URLs remain compatible. See [Assets](#assets) below; this does not imply general V1 API compatibility.
+
 This document is intended to outline the key differences between v1 and v2, and
 assist in efforts to migrate to the new version. For full documentation of the
 v2 API, refer to the [guides] and [api reference].
@@ -106,6 +108,12 @@ queries into one search query syntax.
 An introduction to this new syntax can be found in the [Searching Sheets] guide.
 
 [Searching Sheets]: /en/docs/guides/search/
+
+## Assets
+
+Existing V1 icon URLs such as `/i/051000/051474.png` and `/i/051000/051474_hr1.png` can continue to be used on this service. They are rooted at `/i/`, not `/api/i/`. Their `.png` suffix is preserved for compatibility, while the actual image format is indicated by `Content-Type` and may be WebP or AVIF.
+
+For explicit PNG output, use `/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png`. Currently only icons and maps are supported. See [Retrieving Assets](/en/docs/guides/assets/) for the full limitations and map endpoint.
 
 ## Lodestone
 

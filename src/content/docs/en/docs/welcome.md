@@ -18,13 +18,14 @@ questions about the official XIVAPI version, you can join the
 
 ## Features
 
-XIVAPI offers access to FFXIV data from anywhere with an internet connection.
-Every sheet, texture, and value - if it's part of the game client, we've got it.
+This service provides access to published FFXIV sheet data, icons and maps over
+HTTP. It does not expose every game file; see [service limitations](/en/docs/guides/difference/).
 
 Highlights include:
-- **[API Stability](/en/docs/guides/pinning/):** You can't decide when a patch
-  releases, but you _can_ decide when it impacts you. Pin requests to ensure
-  consistency until you're ready to update your code.
+
+- **[Schema Pinning](/en/docs/guides/pinning/):** Pin field names and mappings to
+  a schema revision. Sheet data always uses the latest local release, so a
+  schema pin does not freeze the underlying game data.
 - **[Full-dataset search](/en/docs/guides/search/):** Any field can be used in
   search queries and filters to help find what you're looking for - even if
   nobody knows what it means!

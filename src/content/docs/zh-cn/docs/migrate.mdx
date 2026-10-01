@@ -4,11 +4,9 @@ prev: false
 next: false
 ---
 
-import AITranslated from 'components/asides/AITranslated.astro';
-  
-<AITranslated />
-
 XIVAPI v2 代表服务的从头重新实现，重点关注消费者的稳定性，并为未来几年提供坚实的平台。为了实现这一点，它不尝试与 v1 保持向后兼容性。
+
+FFCafe 对资源接口保留了一项例外：V1 的 `/i/` 图标 URL 仍然兼容，详见下方[资源](#资源)说明。这不代表其他 V1 API 也兼容。
 
 本文档旨在概述 v1 和 v2 之间的主要差异，并协助迁移到新版本。有关 v2 API 的完整文档，请参阅[指南]和[API 参考]。
 
@@ -38,7 +36,7 @@ fields=Array[].Field
 
 V2 使用 [EXDSchema] 作为其[模式]。EXDSchema 继承了 v1 使用的 SaintCoinach 模式中的大部分名称和映射——因此大多数字段应该与您习惯的相同或相似。
 
-如果字段不在您期望的位置，您可以通过访问不带字段过滤器的行端点来检查表格的完整模式结构，如[表格文档][sheets filtering]中所述。字段可能已经稍微重新排列，以更好地表示它们在游戏文件中的结构。
+如果字段不在您期望的位置，您可以通过访问不带字段过滤器的行端点来检查表格的完整模式结构，如[表格文档]中所述。字段可能已经稍微重新排列，以更好地表示它们在游戏文件中的结构。
 
 [EXDSchema]: https://github.com/xivdev/EXDSchema
 [模式]: /zh-cn/docs/guides/concepts/#schemas
@@ -72,7 +70,13 @@ V2 有一个强大的搜索端点，将 v1 的查询字符串、过滤器和高�
 
 有关此新语法的介绍，请参阅[搜索表格]指南。
 
-[Searching Sheets]: /zh-cn/docs/guides/search/
+[搜索表格]: /zh-cn/docs/guides/search/
+
+## 资源
+
+原有的 `/i/051000/051474.png`、`/i/051000/051474_hr1.png` 等 V1 图标路径可以继续在本服务使用，路径前缀为 `/i/`，不是 `/api/i/`。其中 `.png` 后缀仅用于保留旧 URL，实际格式可能是 WebP 或 AVIF，应以响应的 `Content-Type` 为准。
+
+如果需要明确返回 PNG，请使用 `/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png`。目前仅支持图标和地图，完整限制及地图接口请参阅[获取资源](/zh-cn/docs/guides/assets/)。
 
 ## Lodestone
 

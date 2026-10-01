@@ -1,7 +1,7 @@
 ---
 title: Differences from the Official Version
 sidebar:
-  order: 5
+  order: 6
 ---
 
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
@@ -17,13 +17,13 @@ This service supports querying data in the following languages:
 | --- | --- | --- |
 | Simplified Chinese | `chs` | Default/primary language |
 | Traditional Chinese | `tc` | |
+| Japanese | `ja` | |
 | English | `en` | |
 | German | `de` | |
 | French | `fr` | |
-| Japanese | `ja` | |
 | Korean | `ko` | |
 
-Data is merged from the latest version of each client.
+Data is merged from the latest processed version of each client. Availability of individual rows and translations can differ between clients.
 
 <AnchorHeading id="sheets" level={3}>Supported Sheets</AnchorHeading>
 
@@ -31,9 +31,11 @@ This service does not support querying sheet data in subfolders (sheets with `/`
 
 <AnchorHeading id="game-versions" level={3}>Version Control</AnchorHeading>
 
-This service does not currently support version control. All requests will use the latest version of data. The `version` parameter is invalid when querying sheet data.
+Sheet requests use the latest version of data; the `version` parameter is ignored for those requests. Asset endpoints use separate published snapshots, as described in [Retrieving Assets](/en/docs/guides/assets/#limitations).
 
 <AnchorHeading id="assets" level={3}>Assets</AnchorHeading>
 
-This service does not currently support asset requests. All related requests will return 404.
+This service currently supports only icons (`ui/icon/`) and maps (`ui/map/`) present in its published asset index, not arbitrary game files. See [Retrieving Assets](/en/docs/guides/assets/) for supported formats, caching and map composition.
+
+V1 icon paths such as `/i/051000/051474.png` and `/i/051000/051474_hr1.png` are also supported. The `.png` suffix does not guarantee PNG bytes; use the response's `Content-Type`. See [Legacy V1 Paths](/en/docs/guides/assets/#legacy-v1-paths).
 

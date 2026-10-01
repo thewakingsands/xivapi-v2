@@ -1,7 +1,7 @@
 ---
 title: 与官方版本的差异
 sidebar:
-  order: 5
+  order: 6
 ---
 
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
@@ -23,7 +23,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 | 法文 | `fr` | |
 | 韩文 | `ko` | |
 
-数据基于每个客户端的最新版本数据合并而来。
+数据基于每个客户端最新已处理版本的数据合并而来。具体数据行和译文的可用性可能因客户端而异。
 
 <AnchorHeading id="sheets" level={3}>支持的表格列表</AnchorHeading>
 
@@ -31,8 +31,10 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 <AnchorHeading id="game-versions" level={3}>版本控制</AnchorHeading>
 
-本服务暂不支持版本控制，所有请求都将使用最新版本的数据。查询表格数据时 `version` 参数无效。
+查询表格数据时使用最新版本，`version` 参数无效。资源端点使用独立的已发布快照，具体限制请参阅[获取资源](/zh-cn/docs/guides/assets/#limitations)。
 
 <AnchorHeading id="assets" level={3}>资源</AnchorHeading>
 
-本服务暂不支持资源（assets）请求，所有相关请求都将返回 404。
+本服务目前仅支持已发布资源索引中的图标（`ui/icon/`）和地图（`ui/map/`），不支持任意游戏文件。输出格式、缓存和地图合成用法请参阅[获取资源](/zh-cn/docs/guides/assets/)。
+
+同时兼容 V1 的图标路径，例如 `/i/051000/051474.png` 和 `/i/051000/051474_hr1.png`。其中 `.png` 后缀不保证实际返回 PNG，应以响应的 `Content-Type` 为准，详见[兼容 V1 的资源路径](/zh-cn/docs/guides/assets/#legacy-v1-paths)。

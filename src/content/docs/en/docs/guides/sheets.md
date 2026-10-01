@@ -8,8 +8,8 @@ reference:
 ---
 
 Sheet endpoints retrieve data for one or more rows from a sheet, mapping values
-to match a schema. Pinning is available for both game version and schema for
-these endpoints, see [Ensuring Stability] for more information.
+to match a schema. These endpoints support schema pins, but always use the latest
+local data release and ignore `version`. See [Ensuring Stability] for more information.
 
 [Ensuring Stability]: /en/docs/guides/pinning/
 
@@ -21,6 +21,11 @@ editions, refer to [Important Concepts][concepts-localisations].
 
 While XIVAPI defaults to Simplified Chinese text in responses, other languages may be
 requested with the `language` parameter.
+
+Supported codes are `chs`, `tc`, `ja`, `en`, `de`, `fr` and `ko`. Availability
+depends on the client data included in the release. Examples below use
+`language=en` when they show English values; displayed responses are excerpts,
+and game updates may change their values.
 
 ```json /language=(chs|ja|en|de|fr|ko)/
 // /api/sheet/Item/42589?fields=Name&language=chs
@@ -73,7 +78,8 @@ Relationship
 
 Icon
 : Numeric values representing an icon asset ID. XIVAPI will pre-compute the
-  relevant paths for accessing the asset.
+  relevant paths for accessing the asset. A generated path does not guarantee
+  that the image is in the [published asset index](/en/docs/guides/assets/).
 
 [field relationships]: /en/docs/guides/concepts#relationships
 
@@ -82,8 +88,8 @@ Icon
 Sheets regularly contain more information than is needed for a single use-case.
 This quickly compounds when field relationships are present that link in
 additional rows of data. For example, the [full response][pct brush full] for
-the "Angel Brush" `Item` is over 80kB before compression, representing
-approximately 6500 lines of formatted JSON.
+the "Angel Brush" `Item` includes many nested relationships; its size depends
+on the active data and schema.
 
 [pct brush full]: /api/sheet/Item/42589
 
@@ -94,7 +100,7 @@ can be used to specify a subset of fields that should be included:
 <summary><code>fields=Name,LevelEquip</code></summary>
 
 ```json "Name" "LevelEquip"
-// /api/sheet/Item/42589?fields=Name,LevelEquip
+// /api/sheet/Item/42589?language=en&fields=Name,LevelEquip
 {
   "fields": {
     "Name": "Angel Brush",
@@ -112,7 +118,7 @@ specify the path to access it:
 <summary><code>fields=ItemUICategory.Name</code></summary>
 
 ```json "ItemUICategory.Name" "ItemUICategory" "Name"
-// /api/sheet/Item/42589?fields=ItemUICategory.Name
+// /api/sheet/Item/42589?language=en&fields=ItemUICategory.Name
 {
   "fields": {
     "ItemUICategory": {
@@ -132,7 +138,7 @@ Array fields may be specified to retrieve values from all entries:
 <summary><code>fields=BaseParam[].Name</code></summary>
 
 ```json "BaseParam[]" "BaseParam"
-// /api/sheet/Item/42589?fields=BaseParam[].Name
+// /api/sheet/Item/42589?language=en&fields=BaseParam[].Name
 {
   "fields": {
     "BaseParam": [
@@ -148,8 +154,8 @@ Array fields may be specified to retrieve values from all entries:
 
 :::tip[Not sure what field you want?]
 
-You can omit the `fields` parameter on the `/sheet/{sheet}/{row}` endpoint to
-see every field available for the given game version and schema. Fair warning,
+You can omit the `fields` parameter on the `/api/sheet/{sheet}/{row}` endpoint to
+see every field available for the active data release and selected schema. Fair warning,
 there may be quite a few!
 
 :::
@@ -189,7 +195,7 @@ default for any nested fields:
 <summary><code>fields=ItemUICategory@lang(de).Name</code></summary>
 
 ```json "ItemUICategory@lang(de)"
-// /api/sheet/Item/42589?fields=ItemUICategory@lang(de).Name
+// /api/sheet/Item/42589?language=en&fields=ItemUICategory@lang(de).Name
 {
   "fields": {
     "ItemUICategory@lang(de)": {
@@ -215,7 +221,7 @@ icons, useful if the rich data is not going to be utilised.
 <summary><code>fields=ItemUICategory,ItemUICategory@as(raw)</code></summary>
 
 ```json "ItemUICategory@as(raw)"
-// /api/sheet/Item/42589?fields=ItemUICategory,ItemUICategory@as(raw)
+// /api/sheet/Item/42589?language=en&fields=ItemUICategory,ItemUICategory@as(raw)
 {
   "fields": {
     "ItemUICategory": {
@@ -239,7 +245,7 @@ text and formatting features in the game's rich text format.
 <summary><code>fields=Description,Description@as(html)</code></summary>
 
 ```json wrap "Description@as(html)"
-// /api/sheet/Item/44104?fields=Description,Description@as(html)
+// /api/sheet/Item/44104?language=en&fields=Description,Description@as(html)
 {
   "fields": {
     "Description": "Warm flour tortillas filled with slices of marinated rroneek chuck that has been grilled to a smoky char.\n\nEXP Bonus: +3% Duration: 30m\n(Duration can be extended to 60m by consuming multiple servings)",
@@ -254,17 +260,19 @@ text and formatting features in the game's rich text format.
 
 As [outlined prior][transient sheets], related data may be split into two or
 more sheets as an implementation detail. To reduce the number of requests needed
-to retrieve data, the API attempts to find transient sheets, and includes their
-content in a top-level `transient` key, when available.
+to retrieve data, the API attempts to find transient sheets. The single-row
+endpoint includes their content in a top-level `transient` key by default when
+available. Row-list and search endpoints omit it unless requested.
 
 To control these fields, the `transient` parameter can be provided. It accepts
 identical syntax to the `fields` parameter [outlined above](#fields).
+Use `transient=` to omit transient fields, or `transient=*` to request them all.
 
 <details>
 <summary><code>transient=Description@as(html)</code></summary>
 
 ```json wrap "transient"
-// /api/sheet/Action/34684?transient=Description@as(html)
+// /api/sheet/Action/34684?language=en&transient=Description@as(html)
 {
   "fields": {
     // ...
@@ -296,12 +304,14 @@ All of the examples above have used the single-row endpoint,
 `/api/sheet/{sheet}/{row}`. If more than one row from the same sheet is desired,
 the row list endpoint is available.
 
-All parameters outlined above are also available for the row list.
+All parameters outlined above are also available for the row list. Unlike the
+single-row endpoint, its default field filter is `Name,Singular,Icon`; request
+`fields=*` for all fields. Transient fields must also be requested explicitly.
 
 By default, it will list all rows in ID order, starting from the first.
 
 ```json
-// /api/sheet/Item?fields=Name
+// /api/sheet/Item?language=en&fields=Name
 {
   "rows": [
     { "row_id": 0, "fields": { "Name": "" } },
@@ -317,11 +327,15 @@ specified row ID. Additionally, the `limit` parameter can be used to adjust the
 maximum number of results returned in one response. Excessively large `limits`
 will be clamped to a server-defined maximum.
 
+For sheets with subrows, use `row_id:subrow_id` in the row path, `rows` and
+`after`, for example `after=10:2`. Continue pagination after the last returned
+row and subrow. Do not combine `rows` with `after`; their joint behavior is undefined.
+
 <details>
 <summary><code>after=1&limit=2</code></summary>
 
 ```json "after=1" "limit=2"
-// /api/sheet/Item?fields=Name&after=1&limit=2
+// /api/sheet/Item?language=en&fields=Name&after=1&limit=2
 {
   "rows": [
     { "row_id": 2, "fields": { "Name": "Fire Shard" } },
@@ -339,7 +353,7 @@ retrieving a batch of rows from a sheet.
 <summary><code>rows=1,29,46</code></summary>
 
 ```json /(?:rows=|row_id": )(1)/ "29" "46"
-// /api/sheet/Item?fields=Name&rows=1,29,46
+// /api/sheet/Item?language=en&fields=Name&rows=1,29,46
 {
   "rows": [
     { "row_id": 1, "fields": { "Name": "Gil" } },
@@ -353,9 +367,8 @@ retrieving a batch of rows from a sheet.
 
 :::caution
 
-Row IDs are **not** guaranteed to be contiguous, as many sheets contain
-significant "holes" of unused IDs. In most cases, these IDs will not be present
-in data, and will be skipped or ignored when requested, including when
-iterating. 
+Row IDs are **not** guaranteed to be contiguous. Listing rows iterates over
+existing records, but explicitly requesting a missing row through the single-row
+endpoint or `rows` returns `404`; it is not silently omitted from a batch.
 
 :::

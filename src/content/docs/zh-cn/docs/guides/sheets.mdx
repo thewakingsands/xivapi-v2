@@ -7,12 +7,9 @@ reference:
   description: 表格端点的 OpenAPI 规范。
 ---
 
-import AITranslated from 'components/asides/AITranslated.astro';
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
-<AITranslated />
-
-表格端点从表格中检索一行或多行的数据，映射值以匹配模式。这些端点支持固定游戏版本和模式，有关更多信息，请参阅[确保稳定性]。
+表格端点从表格中读取一行或多行数据，并按模式组织字段。这些端点支持固定模式，但始终使用本地最新数据版本，忽略 `version`，详见[确保稳定性]。
 
 [确保稳定性]: /zh-cn/docs/guides/pinning/
 
@@ -21,6 +18,8 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 包含面向用户字符串的表格通常本地化为游戏客户端支持的所有语言。有关本地化和游戏版本的更多详细信息，请参阅[重要概念][concepts-localisations]。
 
 虽然 XIVAPI 在响应中默认为简体中文文本，但可以使用 `language` 参数请求其他语言。
+
+支持的代码为 `chs`、`tc`、`ja`、`en`、`de`、`fr` 和 `ko`，具体可用性取决于发布版本包含的客户端数据。下方展示英文值的示例会指定 `language=en`；响应仅展示相关部分，游戏更新可能改变其中的值。
 
 ```json /language=(chs|ja|en|de|fr|ko)/
 // /api/sheet/Item/42589?fields=Name&language=chs
@@ -62,13 +61,13 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 : 值表示指向另一个表格的链接的字段。有关更多信息，请参阅[字段关系]。
 
 图标
-: 表示图标资源 ID 的数值。XIVAPI 将预计算访问资源的相关路径。
+: 表示图标资源 ID 的数值。XIVAPI 会预先生成访问资源的相关路径，但生成路径不代表图片一定存在于[已发布资源索引](/zh-cn/docs/guides/assets/)中。
 
-[field relationships]: /zh-cn/docs/guides/concepts#relationships
+[字段关系]: /zh-cn/docs/guides/concepts#relationships
 
-### 过滤
+<AnchorHeading id="filtering" level={3}>过滤</AnchorHeading>
 
-表格通常包含比单个用例所需更多的信息。当存在链接其他数据行的字段关系时，这会迅速增加。例如，"天使之笔" `Item` 的[完整响应][pct brush full]在压缩前超过 80kB，代表大约 6500 行格式化的 JSON。
+表格通常包含比单个用例所需更多的信息，关联其他数据行的字段会进一步增加响应内容。例如，"天使之笔" `Item` 的[完整响应][pct brush full]包含大量嵌套关系，其大小取决于当前数据和模式。
 
 [pct brush full]: /api/sheet/Item/42589
 
@@ -78,7 +77,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>fields=Name,LevelEquip</code></summary>
 
 ```json "Name" "LevelEquip"
-// /api/sheet/Item/42589?fields=Name,LevelEquip
+// /api/sheet/Item/42589?language=en&fields=Name,LevelEquip
 {
   "fields": {
     "Name": "Angel Brush",
@@ -95,7 +94,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>fields=ItemUICategory.Name</code></summary>
 
 ```json "ItemUICategory.Name" "ItemUICategory" "Name"
-// /api/sheet/Item/42589?fields=ItemUICategory.Name
+// /api/sheet/Item/42589?language=en&fields=ItemUICategory.Name
 {
   "fields": {
     "ItemUICategory": {
@@ -115,7 +114,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>fields=BaseParam[].Name</code></summary>
 
 ```json "BaseParam[]" "BaseParam"
-// /api/sheet/Item/42589?fields=BaseParam[].Name
+// /api/sheet/Item/42589?language=en&fields=BaseParam[].Name
 {
   "fields": {
     "BaseParam": [
@@ -131,7 +130,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 :::tip[不确定需要什么字段？]
 
-您可以在 `/sheet/{sheet}/{row}` 端点上省略 `fields` 参数，以查看给定游戏版本和模式可用的每个字段。提醒一下，可能有很多！
+您可以在 `/api/sheet/{sheet}/{row}` 端点上省略 `fields` 参数，以查看当前数据版本和所选模式中的所有字段。注意，返回的字段可能很多！
 
 :::
 
@@ -164,7 +163,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>fields=ItemUICategory@lang(de).Name</code></summary>
 
 ```json "ItemUICategory@lang(de)"
-// /api/sheet/Item/42589?fields=ItemUICategory@lang(de).Name
+// /api/sheet/Item/42589?language=en&fields=ItemUICategory@lang(de).Name
 {
   "fields": {
     "ItemUICategory@lang(de)": {
@@ -188,7 +187,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>fields=ItemUICategory,ItemUICategory@as(raw)</code></summary>
 
 ```json "ItemUICategory@as(raw)"
-// /api/sheet/Item/42589?fields=ItemUICategory,ItemUICategory@as(raw)
+// /api/sheet/Item/42589?language=en&fields=ItemUICategory,ItemUICategory@as(raw)
 {
   "fields": {
     "ItemUICategory": {
@@ -211,7 +210,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>fields=Description,Description@as(html)</code></summary>
 
 ```json wrap "Description@as(html)"
-// /api/sheet/Item/44104?fields=Description,Description@as(html)
+// /api/sheet/Item/44104?language=en&fields=Description,Description@as(html)
 {
   "fields": {
     "Description": "Warm flour tortillas filled with slices of marinated rroneek chuck that has been grilled to a smoky char.\n\nEXP Bonus: +3% Duration: 30m\n(Duration can be extended to 60m by consuming multiple servings)",
@@ -224,15 +223,16 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 <AnchorHeading id="transient-sheets" level={3}>瞬态表格</AnchorHeading>
 
-如[之前概述][transient sheets]，相关数据可能作为实现细节拆分为两个或更多表格。为了减少检索数据所需的请求数量，API 尝试查找瞬态表格，并在可用时将其内容包含在顶级 `transient` 键中。
+如[之前概述][transient sheets]，相关数据可能拆分为多个表格。为减少请求次数，API 会尝试查找瞬态表格。单行端点默认将可用的瞬态数据放在顶级 `transient` 键中；行列表和搜索端点则需要显式请求才会包含这些数据。
 
 要控制这些字段，可以提供 `transient` 参数。它接受与[上面概述](#fields)的 `fields` 参数相同的语法。
+使用 `transient=` 可省略瞬态字段，使用 `transient=*` 可请求全部瞬态字段。
 
 <details>
 <summary><code>transient=Description@as(html)</code></summary>
 
 ```json wrap "transient"
-// /api/sheet/Action/34684?transient=Description@as(html)
+// /api/sheet/Action/34684?language=en&transient=Description@as(html)
 {
   "fields": {
     // ...
@@ -259,12 +259,12 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 上面的所有示例都使用了单行端点 `/api/sheet/{sheet}/{row}`。如果需要来自同一表格的多行，可以使用行列表端点。
 
-上面概述的所有参数也可用于行列表。
+上面概述的所有参数也可用于行列表。与单行端点不同，行列表默认只读取 `Name,Singular,Icon`；可用 `fields=*` 请求全部字段。瞬态字段也需要显式请求。
 
 默认情况下，它将按 ID 顺序列出所有行，从第一个开始。
 
 ```json
-// /api/sheet/Item?fields=Name
+// /api/sheet/Item?language=en&fields=Name
 {
   "rows": [
     { "row_id": 0, "fields": { "Name": "" } },
@@ -277,11 +277,13 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 如果提供，`after` 参数将跳过小于或等于指定行 ID 的任何行。此外，`limit` 参数可用于调整一次响应中返回的最大结果数。过大的 `limits` 将被限制为服务器定义的最大值。
 
+对于包含子行的表格，在行路径、`rows` 和 `after` 中使用 `row_id:subrow_id`，例如 `after=10:2`。分页时从上次返回的最后一个行和子行之后继续读取。不要同时传入 `rows` 和 `after`，两者一起使用时的行为未定义。
+
 <details>
 <summary><code>after=1&limit=2</code></summary>
 
 ```json "after=1" "limit=2"
-// /api/sheet/Item?fields=Name&after=1&limit=2
+// /api/sheet/Item?language=en&fields=Name&after=1&limit=2
 {
   "rows": [
     { "row_id": 2, "fields": { "Name": "Fire Shard" } },
@@ -298,7 +300,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 <summary><code>rows=1,29,46</code></summary>
 
 ```json /(?:rows=|row_id": )(1)/ "29" "46"
-// /api/sheet/Item?fields=Name&rows=1,29,46
+// /api/sheet/Item?language=en&fields=Name&rows=1,29,46
 {
   "rows": [
     { "row_id": 1, "fields": { "Name": "Gil" } },
@@ -312,6 +314,6 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 :::caution
 
-行 ID **不**保证是连续的，因为许多表格包含大量未使用 ID 的"空洞"。在大多数情况下，这些 ID 不会出现在数据中，并且在请求时（包括迭代时）将被跳过或忽略。
+行 ID **不**保证连续。行列表遍历的是实际存在的记录，但通过单行端点或 `rows` 显式请求不存在的行时会返回 `404`，而不是从批量结果中静默忽略该行。
 
 :::

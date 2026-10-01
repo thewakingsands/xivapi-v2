@@ -1,0 +1,70 @@
+---
+title: 获取资源
+sidebar:
+  order: 5
+reference:
+  href: /api/docs#tag/assets
+  description: 资源端点的 OpenAPI 规范。
+---
+
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
+
+资源端点直接返回图片内容，而不是 JSON。
+
+<AnchorHeading id="limitations" level={2}>限制</AnchorHeading>
+
+本服务目前**仅支持图标（`ui/icon/`）和地图（`ui/map/`）**。加载画面、这些目录之外的 UI 纹理、模型、音频等其他游戏资源暂不支持。即使游戏路径有效，也需要该文件已收录到发布的资源索引中；资源不存在时返回 `404`。
+
+`/api/asset?path=...` 和 `/api/asset/<game-path>` 的 `format` 参数可选。省略时按存储格式原样返回图片，通常为 WebP 或 AVIF。应以响应的 `Content-Type` 判断格式；游戏路径中的 `.tex` 后缀不决定响应编码。
+
+指定 `format=png`、`format=jpg` 或 `format=webp` 时返回相应编码。`format=avif` 仅支持原样返回已存储的 AVIF 图片；源文件不是 AVIF 时返回 `400`，不执行 AVIF 编码。服务不会根据 `Accept` 请求头自动协商格式。
+
+资源使用独立于表格数据的已发布快照。不传 `version` 或指定 `version=latest` 时，使用服务已加载的资源快照；只有已发布资源索引的游戏版本才能显式指定。这里不支持上游的版本哈希或 GitHub release 标题，也不需要指定 schema。
+
+<AnchorHeading id="a-word-on-caching" level={2}>关于缓存</AnchorHeading>
+
+可以直接在网页图片元素中使用资源 URL。客户端应遵守 `Cache-Control`，并保留响应中的 `ETag`；后续请求发送匹配的 `If-None-Match` 时，服务可以返回 `304 Not Modified`，避免重复传输图片。浏览器通常会自动处理这些行为。
+
+<AnchorHeading id="fetch-assets" level={2}>获取资源文件</AnchorHeading>
+
+通过原始游戏路径请求图片，可选指定输出格式：
+
+```text
+/api/asset?path=ui/icon/051000/051474_hr1.tex
+/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png
+/api/asset/ui/icon/051000/051474_hr1.tex?format=png
+```
+
+[打开示例图标](https://xivapi-v2.xivcdn.com/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png)。
+
+[表格响应](/zh-cn/docs/guides/sheets/)中的图标字段会提供游戏路径。应使用这些路径，并保留语言目录、`_hr1` 等组成部分，而不是使用 MinIO 对象名。地图源纹理也可以通过这个接口读取；如果需要合成后的地图，请使用下面的地图接口。
+
+<AnchorHeading id="compose-maps" level={2}>合成地图</AnchorHeading>
+
+地图接口会在需要时合并主地图纹理和背景，也会处理已预先合成的地图：
+
+```text
+/api/asset/map/s1d1/00
+/api/asset/map/s1d1/00?format=png
+```
+
+[打开示例地图](https://xivapi-v2.xivcdn.com/api/asset/map/s1d1/00?format=png)。
+
+路径中的两个部分来自 `Map` 表的 `Id` 字段，例如 `s1d1/00`。与资源文件接口不同，该接口默认返回 `jpg`，也支持指定 `format=png` 或 `format=webp`。由于此接口需要合成图片而不是返回已存储的文件，`format=avif` 会返回 `400`。
+
+如果需要原样获取地图源纹理，请使用 `/api/asset?path=ui/map/s1d1/00/s1d100_m.tex`，不传 `format`。
+
+<AnchorHeading id="legacy-v1-paths" level={2}>兼容 V1 的资源路径</AnchorHeading>
+
+FFCafe 额外保留 V1 的图标访问路径。它们位于站点根路径，**不带 `/api` 前缀**：
+
+```text
+/i/051000/051474.png
+/i/051000/051474_hr1.png
+```
+
+[打开 V1 兼容图标](https://xivapi-v2.xivcdn.com/i/051000/051474_hr1.png)。
+
+目录和图标 ID 都使用补零后的六位数字。通常，目录是图标 ID 向下取整到 1,000 的倍数；即使传入其他六位数字目录，也会按图标 ID 查找。`_hr1` 表示高分辨率版本。此兼容接口用于默认变体的图标，不用于地图或带语言目录的图标路径。
+
+`.png` 后缀仅为保留旧 URL，实际返回的是已存储的 WebP 或 AVIF 图片，应以响应的 `Content-Type` 为准。此接口不会因为后缀、`format` 查询参数或 `Accept` 请求头而执行格式转换。如果程序要求真正的 PNG 文件，请使用 `/api/asset?...&format=png`。
