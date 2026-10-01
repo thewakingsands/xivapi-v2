@@ -2,6 +2,10 @@
 	"name": "xivapi",
 	"type": "module",
 	"version": "0.0.1",
+	"packageManager": "pnpm@11.6.0",
+	"engines": {
+		"node": ">=22.12.0"
+	},
 	"scripts": {
 		"postinstall": "astro telemetry disable",
 		"dev": "astro dev",
@@ -10,21 +14,13 @@
 		"preview": "astro preview",
 		"astro": "astro"
 	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"sharp"
-		],
-		"patchedDependencies": {
-			"@astrojs/starlight": "patches/@astrojs__starlight.patch"
-		}
-	},
 	"dependencies": {
-		"@astrojs/markdown-remark": "^6.0.2",
-		"@astrojs/preact": "^4.0.3",
-		"@astrojs/starlight": "^0.36.2",
+		"@astrojs/markdown-remark": "^7.3.1",
+		"@astrojs/preact": "^6.0.5",
+		"@astrojs/starlight": "0.42.4",
 		"@shikijs/langs": "^1",
 		"@shikijs/themes": "^1",
-		"astro": "^5.15.4",
+		"astro": "^7.3.5",
 		"clsx": "^2.1.1",
 		"hast-util-to-jsx-runtime": "^2.3.2",
 		"lucide-preact": "^0.474.0",
@@ -32,9 +28,9 @@
 		"rehype-autolink-headings": "^7.1.0",
 		"rehype-widont": "^0.1.1",
 		"remark-definition-list": "^2.0.0",
-		"sharp": "^0.32.5",
+		"sharp": "^0.35.5",
 		"shiki": "^1",
-		"starlight-links-validator": "^0.14.1",
+		"starlight-links-validator": "^0.26.0",
 		"typescript-parsec": "^0.3.4"
 	}
 }

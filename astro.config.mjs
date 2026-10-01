@@ -1,5 +1,5 @@
 // @ts-check
-import { rehypeHeadingIds } from '@astrojs/markdown-remark';
+import { rehypeHeadingIds, unified } from '@astrojs/markdown-remark';
 import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
 import { defineConfig } from 'astro/config';
@@ -45,7 +45,7 @@ export default defineConfig({
 					translations: {
 						'zh-CN': '指南',
 					},
-					autogenerate: { directory: 'docs/guides' },
+					items: [{ autogenerate: { directory: 'docs/guides' } }],
 				},
 				'docs/software',
 				'docs/migrate',
@@ -87,14 +87,16 @@ export default defineConfig({
 		}
 	},
 	markdown: {
-		remarkPlugins: [remarkDefinitionList],
-		rehypePlugins: [
-			rehypeHeadingIds,
-			[rehypeAutolinkHeadings, { behavior: 'wrap' }],
-			rehypeWidont
-		],
-		remarkRehype: {
-			handlers: { ...defListHastHandlers },
-		},
+		processor: unified({
+			remarkPlugins: [remarkDefinitionList],
+			rehypePlugins: [
+				rehypeHeadingIds,
+				[rehypeAutolinkHeadings, { behavior: 'wrap' }],
+				rehypeWidont
+			],
+			remarkRehype: {
+				handlers: { ...defListHastHandlers },
+			},
+		}),
 	},
 });
