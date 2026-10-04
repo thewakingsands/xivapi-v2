@@ -9,6 +9,21 @@ The publishing workflow uses Node.js 24 and installs the declared pnpm version.
 Build permissions and the Starlight sidebar patch are configured in
 `pnpm-workspace.yaml`.
 
+## Publishing
+
+Pushing `main` (or manually running the `publish` workflow on `main`) builds the
+static site and publishes a public GitHub Release containing `docs.zip` and
+`docs.zip.sha256`. The ZIP contains the contents of `dist/` directly, without an
+extra parent directory. A `dist` Actions artifact is also retained for debugging;
+the Release assets support anonymous downloads for the boilmaster admin sync.
+
+In boilmaster, enable the authenticated admin page and use its documentation sync
+button to fetch the latest stable release from this repository. The directory
+configured by `BM_HTTP_DIRECTORY` (Docker: `/app/static`) must be writable and
+persistent for this feature. Manual read-only mounting of `dist/` remains available
+when server-side synchronization is not used. Publishing a Release does not by
+itself trigger synchronization on running servers.
+
 ## Commands
 
 All commands are run from the root of the project, from a terminal:

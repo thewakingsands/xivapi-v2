@@ -1,12 +1,19 @@
 name: publish
 
 on:
+  workflow_dispatch: {}
   push:
     branches: ['main']
 
 jobs:
   publish:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: documentation-release
+      cancel-in-progress: false
 
     steps:
       - uses: actions/checkout@v4
@@ -25,3 +32,23 @@ jobs:
         with:
           name: dist
           path: dist/
+      - name: Package public documentation release
+        run: |
+          cd dist
+          zip -r ../docs.zip .
+          cd ..
+          sha256sum docs.zip > docs.zip.sha256
+      - name: Publish documentation release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+          RELEASE_RUN: ${{ github.run_number }}
+          RELEASE_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          tag="docs-${RELEASE_RUN}-${RELEASE_ATTEMPT}-${RELEASE_COMMIT:0:12}"
+          gh release create "$tag" docs.zip docs.zip.sha256 \
+            --target "$RELEASE_COMMIT" \
+            --title "Documentation ${RELEASE_COMMIT:0:12}" \
+            --notes "Static documentation built from commit ${RELEASE_COMMIT}. Extract docs.zip at the site root; docs.zip.sha256 contains its SHA-256 checksum." \
+            --latest
