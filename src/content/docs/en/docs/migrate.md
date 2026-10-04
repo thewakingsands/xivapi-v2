@@ -113,7 +113,7 @@ An introduction to this new syntax can be found in the [Searching Sheets] guide.
 
 Existing V1 icon URLs such as `/i/051000/051474.png` and `/i/051000/051474_hr1.png` can continue to be used on this service. They are rooted at `/i/`, not `/api/i/`. Their `.png` suffix is preserved for compatibility, while the actual image format is indicated by `Content-Type` and may be WebP or AVIF.
 
-For explicit PNG output, use `/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png`. Currently only icons and maps are supported. See [Retrieving Assets](/en/docs/guides/assets/) for the full limitations and map endpoint.
+For explicit PNG output, use `/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png` and send `Accept: image/png`. If `Accept` allows the stored source type, the file endpoint ignores `format` and returns the stored bytes unchanged; missing, empty or non-matching `Accept` falls back to `format`. Omitting `format` always returns the stored bytes unchanged. Currently only icons and maps are supported. See [Retrieving Assets](/en/docs/guides/assets/) for the full limitations and map endpoint.
 
 ## Lodestone
 

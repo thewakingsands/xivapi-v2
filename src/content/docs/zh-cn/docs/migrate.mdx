@@ -76,7 +76,7 @@ V2 有一个强大的搜索端点，将 v1 的查询字符串、过滤器和高�
 
 原有的 `/i/051000/051474.png`、`/i/051000/051474_hr1.png` 等 V1 图标路径可以继续在本服务使用，路径前缀为 `/i/`，不是 `/api/i/`。其中 `.png` 后缀仅用于保留旧 URL，实际格式可能是 WebP 或 AVIF，应以响应的 `Content-Type` 为准。
 
-如果需要明确返回 PNG，请使用 `/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png`。目前仅支持图标和地图，完整限制及地图接口请参阅[获取资源](/zh-cn/docs/guides/assets/)。
+如果需要明确返回 PNG，请使用 `/api/asset?path=ui/icon/051000/051474_hr1.tex&format=png`，并发送 `Accept: image/png`。若 `Accept` 接受源文件的存储类型，资源文件接口会忽略 `format` 并原样返回；若 `Accept` 缺失、为空或不匹配，才按 `format` 处理。省略 `format` 时始终原样返回。目前仅支持图标和地图，完整限制及地图接口请参阅[获取资源](/zh-cn/docs/guides/assets/)。
 
 ## Lodestone
 

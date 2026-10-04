@@ -15,9 +15,13 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 本服务目前**仅支持图标（`ui/icon/`）和地图（`ui/map/`）**。加载画面、这些目录之外的 UI 纹理、模型、音频等其他游戏资源暂不支持。即使游戏路径有效，也需要该文件已收录到发布的资源索引中；资源不存在时返回 `404`。
 
-`/api/asset?path=...` 和 `/api/asset/<game-path>` 的 `format` 参数可选。省略时按存储格式原样返回图片，通常为 WebP 或 AVIF。应以响应的 `Content-Type` 判断格式；游戏路径中的 `.tex` 后缀不决定响应编码。
+`/api/asset?path=...` 和 `/api/asset/<game-path>` 的 `format` 参数可选。省略时无论 `Accept` 请求头为何值，均按存储格式原样返回图片，通常为 WebP 或 AVIF。应以响应的 `Content-Type` 判断格式；游戏路径中的 `.tex` 后缀不决定响应编码。
 
-指定 `format=png`、`format=jpg` 或 `format=webp` 时返回相应编码。`format=avif` 仅支持原样返回已存储的 AVIF 图片；源文件不是 AVIF 时返回 `400`，不执行 AVIF 编码。服务不会根据 `Accept` 请求头自动协商格式。
+指定受支持的 `format` 时，服务优先检查 `Accept` 是否接受当前存储的类型。如果接受，则忽略 `format`，直接返回存储的图片，不执行转码；如果 `Accept` 缺失、为空或不匹配，才按 `format` 处理。匹配支持具体类型、`image/*`、`*/*` 和质量权重；更具体的 `q=0` 会排除该类型。只要存储类型可接受，即使其他类型的权重更高，也优先原样返回。
+
+例如，`format=png` 配合 `Accept: image/avif,image/webp,*/*;q=0.8` 会原样返回存储的 WebP 或 AVIF。若必须获取 PNG，请同时指定 `format=png` 和 `Accept: image/png`。
+
+回退格式支持 `png`、`jpg`、`webp` 和 `avif`，但不执行 AVIF 编码：只有源文件已经是 AVIF 时，才能原样返回 AVIF。若需要回退到 `format=avif` 而源文件不是 AVIF，则返回 `400`；若 `Accept` 已接受源文件的存储类型，则仍优先原样返回该类型。无效或不受支持的 `format` 值始终返回 `400`。
 
 资源使用独立于表格数据的已发布快照。不传 `version` 或指定 `version=latest` 时，使用服务已加载的资源快照；只有已发布资源索引的游戏版本才能显式指定。这里不支持上游的版本哈希或 GitHub release 标题，也不需要指定 schema。
 
@@ -25,9 +29,11 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 可以直接在网页图片元素中使用资源 URL。客户端应遵守 `Cache-Control`，并保留响应中的 `ETag`；后续请求发送匹配的 `If-None-Match` 时，服务可以返回 `304 Not Modified`，避免重复传输图片。浏览器通常会自动处理这些行为。
 
+资源文件接口的成功响应及 `304` 响应包含 `Vary: Accept`。同一 URL 返回不同输出格式时，使用不同的 `ETag`；代理和自建缓存也应按 `Accept` 区分响应，不能将原始 WebP/AVIF 与转码后的 PNG 混用。已有且未过期的浏览器或 CDN 缓存不会因服务更新而自动失效；需要立即切换时，应清除对应缓存。
+
 <AnchorHeading id="fetch-assets" level={2}>获取资源文件</AnchorHeading>
 
-通过原始游戏路径请求图片，可选指定输出格式：
+通过原始游戏路径请求图片，可选指定回退输出格式：
 
 ```text
 /api/asset?path=ui/icon/051000/051474_hr1.tex
@@ -50,7 +56,7 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 [打开示例地图](https://xivapi-v2.xivcdn.com/api/asset/map/s1d1/00?format=png)。
 
-路径中的两个部分来自 `Map` 表的 `Id` 字段，例如 `s1d1/00`。与资源文件接口不同，该接口默认返回 `jpg`，也支持指定 `format=png` 或 `format=webp`。由于此接口需要合成图片而不是返回已存储的文件，`format=avif` 会返回 `400`。
+路径中的两个部分来自 `Map` 表的 `Id` 字段，例如 `s1d1/00`。与资源文件接口不同，该接口不根据 `Accept` 选择格式，默认返回 `jpg`，也支持指定 `format=png` 或 `format=webp`。由于此接口需要合成图片而不是返回已存储的文件，`format=avif` 会返回 `400`。
 
 如果需要原样获取地图源纹理，请使用 `/api/asset?path=ui/map/s1d1/00/s1d100_m.tex`，不传 `format`。
 
@@ -67,4 +73,4 @@ FFCafe 额外保留 V1 的图标访问路径。它们位于站点根路径，**�
 
 目录和图标 ID 都使用补零后的六位数字。通常，目录是图标 ID 向下取整到 1,000 的倍数；即使传入其他六位数字目录，也会按图标 ID 查找。`_hr1` 表示高分辨率版本。此兼容接口用于默认变体的图标，不用于地图或带语言目录的图标路径。
 
-`.png` 后缀仅为保留旧 URL，实际返回的是已存储的 WebP 或 AVIF 图片，应以响应的 `Content-Type` 为准。此接口不会因为后缀、`format` 查询参数或 `Accept` 请求头而执行格式转换。如果程序要求真正的 PNG 文件，请使用 `/api/asset?...&format=png`。
+`.png` 后缀仅为保留旧 URL，实际返回的是已存储的 WebP 或 AVIF 图片，应以响应的 `Content-Type` 为准。此接口不会因为后缀、`format` 查询参数或 `Accept` 请求头而执行格式转换。如果程序要求真正的 PNG 文件，请使用 `/api/asset?...&format=png`，并发送 `Accept: image/png`。
