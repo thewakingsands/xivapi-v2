@@ -38,7 +38,7 @@ FFCafe 版本还使用了以下项目：
 : FFCafe 版本的 XIVAPI 文档网站（即本网站）。
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/boilmaster](https://github.com/thewakingsands/boilmaster)
-: FFCafe 的 API 服务端，从 ixion 发布版本读取合并后的表格数据，通过独立的二进制资源索引提供图标和地图，并支持旧版 `/i/` 图标路径。
+: FFCafe 的 API 服务端，从 ixion 发布版本读取合并后的表格数据，通过独立的二进制资源索引提供图标和地图，并支持按图标 ID 访问的 `/i/` 路径。
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/ixion](https://github.com/thewakingsands/ixion)
 : FFXIV 版本管理及数据处理工具，发布合并后的表格数据和带索引的图标、地图资源，供 FFCafe 服务端读取。
@@ -75,14 +75,6 @@ FFXIV 的官方网站 Lodestone 有公开可访问的页面，包含角色、部
 
 您也可以使用在 [xivapi/lodestone-css-selectors](https://github.com/xivapi/lodestone-css-selectors) 找到的共享 CSS 选择器编写自己的库。
 
-<details>
-<summary>API 以前不支持 Lodestone 吗？</summary>
-
-是的，它支持。不幸的是，这意味着每个访问 Lodestone 的请求都来自 API，而不是个人消费者。尽管当时做出了努力，但下游对 Lodestone 数据的过度使用导致响应中的错误率越来越高。最终 API 被 Lodestone 完全阻止。
-
-目前没有计划重新引入此功能。
-
-</details>
 
 ### 本地游戏文件
 

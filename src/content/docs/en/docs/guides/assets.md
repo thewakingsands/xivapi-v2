@@ -58,17 +58,17 @@ The two path segments come from the `Map` sheet's `Id` value, such as `s1d1/00`.
 
 To retrieve a map source texture unchanged, use `/api/asset?path=ui/map/s1d1/00/s1d100_m.tex` without `format`.
 
-## Legacy V1 Paths
+## Icon Paths
 
-FFCafe additionally preserves the V1 icon paths at the site root, **not** under `/api`:
+This service also supports retrieving images by icon ID. These paths are at the site root, **not** under `/api`:
 
 ```text
 /i/051000/051474.png
 /i/051000/051474_hr1.png
 ```
 
-[Open the V1-compatible icon](https://xivapi-v2.xivcdn.com/i/051000/051474_hr1.png).
+[Open the icon](https://xivapi-v2.xivcdn.com/i/051000/051474_hr1.png).
 
-Both directory and icon ID are six-digit, zero-padded numbers. The conventional directory is the icon ID rounded down to a multiple of 1,000; lookup uses the icon ID even if a different six-digit directory is supplied. `_hr1` requests the high-resolution variant. This compatibility route serves default-variant icons, not maps or language-specific icon paths.
+Both directory and icon ID are six-digit, zero-padded numbers. The conventional directory is the icon ID rounded down to a multiple of 1,000; lookup uses the icon ID even if a different six-digit directory is supplied. `_hr1` requests the high-resolution variant. This route serves default-variant icons, not maps or language-specific icon paths.
 
-The `.png` suffix is retained for URL compatibility: the response contains the stored WebP or AVIF image, identified by its `Content-Type`. Neither the suffix, a `format` query parameter nor the `Accept` header selects a conversion on this route. If an application needs actual PNG bytes, use `/api/asset?...&format=png` and send `Accept: image/png` instead.
+The path uses a `.png` suffix, but the response contains the stored WebP or AVIF image, identified by its `Content-Type`. Neither the suffix, a `format` query parameter nor the `Accept` header selects a conversion on this route. If an application needs actual PNG bytes, use `/api/asset?...&format=png` and send `Accept: image/png` instead.

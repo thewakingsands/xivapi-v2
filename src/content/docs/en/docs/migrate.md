@@ -4,6 +4,8 @@ prev: false
 next: false
 ---
 
+The V1 service has been retired. This guide preserves the differences between the old API and V2 to help migrate existing clients; all requests should use the current V2 service address.
+
 XIVAPI v2 represents a from-scratch reimplementation of the service, with a
 heavy focus on stability for consumers, and providing a solid platform for years
 to come. To achieve this, it does not attempt to maintain backwards compatibilty

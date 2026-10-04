@@ -45,7 +45,7 @@ The FFCafe version also uses the following projects:
 [<Icon name="github" class="inline-icon"/> thewakingsands/boilmaster](https://github.com/thewakingsands/boilmaster)
 : FFCafe's API server. It loads merged sheet data from ixion releases and serves
   icons and maps through a separate binary asset index. It also provides the
-  legacy `/i/` icon route.
+  `/i/` route for retrieving images by icon ID.
 
 [<Icon name="github" class="inline-icon"/> thewakingsands/ixion](https://github.com/thewakingsands/ixion)
 : FFXIV version management and data processing tool. It publishes merged sheet
@@ -95,17 +95,6 @@ and/or services are available that can read this information for use.
 You can also write your own library using the shared css selectors found at
 [xivapi/lodestone-css-selectors](https://github.com/xivapi/lodestone-css-selectors)
 
-<details>
-<summary>Didn't the API use to support Lodestone?</summary>
-
-Yes, it did. Unfortunately, this meant that every request that hit the Lodestone
-came from the API, rather than an individual consumer. Despite efforts at the
-time, downstream overuse of Lodestone data lead to increasingly high error rates
-in responses. Eventually the API was completely blocked by Lodestone.
-
-There are no current plans to re-introduce this functionality.
-
-</details>
 
 ### Local Game Files
 

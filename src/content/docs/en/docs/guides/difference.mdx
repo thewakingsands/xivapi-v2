@@ -37,5 +37,5 @@ Sheet requests use the latest version of data; the `version` parameter is ignore
 
 This service currently supports only icons (`ui/icon/`) and maps (`ui/map/`) present in its published asset index, not arbitrary game files. See [Retrieving Assets](/en/docs/guides/assets/) for supported formats, caching and map composition.
 
-V1 icon paths such as `/i/051000/051474.png` and `/i/051000/051474_hr1.png` are also supported. The `.png` suffix does not guarantee PNG bytes; use the response's `Content-Type`. See [Legacy V1 Paths](/en/docs/guides/assets/#legacy-v1-paths).
+Retrieving images by icon ID is also supported, with paths such as `/i/051000/051474.png` and `/i/051000/051474_hr1.png`. The `.png` suffix does not guarantee PNG bytes; use the response's `Content-Type`. See [Icon Paths](/en/docs/guides/assets/#icon-paths).
 

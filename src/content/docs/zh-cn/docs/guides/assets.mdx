@@ -60,17 +60,17 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 如果需要原样获取地图源纹理，请使用 `/api/asset?path=ui/map/s1d1/00/s1d100_m.tex`，不传 `format`。
 
-<AnchorHeading id="legacy-v1-paths" level={2}>兼容 V1 的资源路径</AnchorHeading>
+<AnchorHeading id="icon-paths" level={2}>图标路径</AnchorHeading>
 
-FFCafe 额外保留 V1 的图标访问路径。它们位于站点根路径，**不带 `/api` 前缀**：
+本服务也支持通过图标 ID 访问图片。以下路径位于站点根路径，**不带 `/api` 前缀**：
 
 ```text
 /i/051000/051474.png
 /i/051000/051474_hr1.png
 ```
 
-[打开 V1 兼容图标](https://xivapi-v2.xivcdn.com/i/051000/051474_hr1.png)。
+[打开图标](https://xivapi-v2.xivcdn.com/i/051000/051474_hr1.png)。
 
-目录和图标 ID 都使用补零后的六位数字。通常，目录是图标 ID 向下取整到 1,000 的倍数；即使传入其他六位数字目录，也会按图标 ID 查找。`_hr1` 表示高分辨率版本。此兼容接口用于默认变体的图标，不用于地图或带语言目录的图标路径。
+目录和图标 ID 都使用补零后的六位数字。通常，目录是图标 ID 向下取整到 1,000 的倍数；即使传入其他六位数字目录，也会按图标 ID 查找。`_hr1` 表示高分辨率版本。此接口用于默认变体的图标，不用于地图或带语言目录的图标路径。
 
-`.png` 后缀仅为保留旧 URL，实际返回的是已存储的 WebP 或 AVIF 图片，应以响应的 `Content-Type` 为准。此接口不会因为后缀、`format` 查询参数或 `Accept` 请求头而执行格式转换。如果程序要求真正的 PNG 文件，请使用 `/api/asset?...&format=png`，并发送 `Accept: image/png`。
+路径使用 `.png` 后缀，但实际返回的是已存储的 WebP 或 AVIF 图片，应以响应的 `Content-Type` 为准。此接口不会因为后缀、`format` 查询参数或 `Accept` 请求头而执行格式转换。如果程序要求真正的 PNG 文件，请使用 `/api/asset?...&format=png`，并发送 `Accept: image/png`。

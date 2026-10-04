@@ -37,4 +37,4 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 
 本服务目前仅支持已发布资源索引中的图标（`ui/icon/`）和地图（`ui/map/`），不支持任意游戏文件。输出格式、缓存和地图合成用法请参阅[获取资源](/zh-cn/docs/guides/assets/)。
 
-同时兼容 V1 的图标路径，例如 `/i/051000/051474.png` 和 `/i/051000/051474_hr1.png`。其中 `.png` 后缀不保证实际返回 PNG，应以响应的 `Content-Type` 为准，详见[兼容 V1 的资源路径](/zh-cn/docs/guides/assets/#legacy-v1-paths)。
+同时支持按图标 ID 访问图片，例如 `/i/051000/051474.png` 和 `/i/051000/051474_hr1.png`。其中 `.png` 后缀不保证实际返回 PNG，应以响应的 `Content-Type` 为准，详见[图标路径](/zh-cn/docs/guides/assets/#icon-paths)。
